@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Generate Unit 5 quiz PDF from PPT exercise content."""
 
+import re
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
@@ -9,10 +11,51 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 
-FONT_PATH = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
+CJK_FONT_PATH = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
+LATIN_FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 OUTPUT_PATH = "/workspace/第五单元小测.pdf"
 
-pdfmetrics.registerFont(TTFont("WQY", FONT_PATH, subfontIndex=0))
+pdfmetrics.registerFont(TTFont("WQY", CJK_FONT_PATH, subfontIndex=0))
+pdfmetrics.registerFont(TTFont("Latin", LATIN_FONT_PATH))
+
+# Latin letters, Latin-1 supplement (à, é, …), extended Latin (ǒ, ɑ, …), and tone marks.
+LATIN_RE = re.compile(
+    r"[A-Za-z\u00C0-\u024F\u0300-\u036F\u1E00-\u1EFF]+"
+    r"(?:\s+[A-Za-z\u00C0-\u024F\u0300-\u036F\u1E00-\u1EFF]+)*"
+)
+
+
+def norm_pinyin(text: str) -> str:
+    """Use standard ASCII g; WQY and some CJK fonts lack U+0261 (script g)."""
+    return text.replace("\u0261", "g")
+
+
+ENTITY_RE = re.compile(r"&(?:nbsp|#\d+|#x[\da-fA-F]+|\w+);")
+
+
+def wrap_latin_segment(text: str) -> str:
+    if not text:
+        return text
+    chunks = re.split(r"(&(?:nbsp|#\d+|#x[\da-fA-F]+|\w+);)", text)
+    out = []
+    for chunk in chunks:
+        if chunk.startswith("&") and chunk.endswith(";"):
+            out.append(chunk)
+        else:
+            out.append(
+                LATIN_RE.sub(
+                    lambda m: f'<font name="Latin">{m.group(0)}</font>', chunk
+                )
+            )
+    return "".join(out)
+
+
+def wrap_latin(text: str) -> str:
+    """Render pinyin/Latin spans with a font that supports tone marks."""
+    parts = re.split(r"(<[^>]+>)", text)
+    return "".join(
+        wrap_latin_segment(part) if not part.startswith("<") else part for part in parts
+    )
 
 
 def u(width: int) -> str:
@@ -96,6 +139,7 @@ def build_styles():
 
 
 def p(text, style):
+    text = wrap_latin(norm_pinyin(text))
     return Paragraph(text.replace("\n", "<br/>"), style)
 
 
@@ -133,9 +177,9 @@ QUESTIONS = [
             f"《我变成了一棵树》：嗓{B2}　痒{B2}　椭{B2}　菱{B2}　鳄{B2}　震{B2}　"
             f"零{B2}　肠{B2}　啃{B2}　醋{B2}　馋{B2}",
             "2. 选出加点字正确的读音，画“√”。",
-            "愁苦（chóu　cóu）　　椭圆（tuǒ　duǒ）　　嗓子（sǎnɡ　sǎn）",
-            "吃醋（chù　cù）　　　啃食（kěn　kěnɡ）　菱形（lín　línɡ）",
-            "鳄鱼（è　èr）　　　　嘴馋（cán　chán）　　晾晒（liànɡ　liàn）",
+            "愁苦（chóu　cóu）　　椭圆（tuǒ　duǒ）　　嗓子（sǎng　sǎn）",
+            "吃醋（chù　cù）　　　啃食（kěn　kěng）　菱形（lín　líng）",
+            "鳄鱼（è　èr）　　　　嘴馋（cán　chán）　　晾晒（liàng　liàn）",
             f"3. 下列词语中加点字跟“系绳子”中的“系”读音相同的一项是{B1}。",
             "A. 关系　　B. 系扣　　C. 联系　　D. 系列",
         ],
@@ -273,7 +317,7 @@ ANSWERS = [
         "二、我会认",
         [
             "1. luó bo；chóu；liàng；niào；jiān；tāo；sǎng；yǎng；tuǒ；líng；è；zhèn；líng；cháng；kěn；cù；chán",
-            "2. chóu；tuǒ；sǎng；cù；kěn；línɡ；è；chán；liànɡ",
+            "2. chóu；tuǒ；sǎng；cù；kěn；líng；è；chán；liàng",
             "3. B",
         ],
     ),
