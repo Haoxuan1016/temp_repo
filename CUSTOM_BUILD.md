@@ -20,6 +20,8 @@ GitHub Actions builds on push / `workflow_dispatch`:
 
 Release tag: `v3.18.0-pr5671-win64`
 
+App version remains `3.18.0` (MSI requires numeric-only prerelease identifiers).
+
 ## Install / overwrite existing CC Switch (Windows 11 x64)
 
 1. Fully quit CC Switch (tray icon → Quit)
