@@ -1438,6 +1438,58 @@ impl KiroAuthManager {
         }
     }
 
+
+    /// 通过 ListAvailableModels 校验 API key 是否可用。
+    ///
+    /// 比 GetProfile 更适合 `ksk_`：很多订阅/临时 API key 可列模型与对话，
+    /// 但无权调用 GetProfile。
+    async fn validate_api_key_via_list_models(
+        &self,
+        access_token: &str,
+        region: &str,
+    ) -> Result<(), String> {
+        let api_region = resolve_api_region(Some(region));
+        let management_url = format!("https://management.{api_region}.kiro.dev/");
+        let (runtime_ua, runtime_amz_ua) =
+            kiro_user_agent(KiroSdkApi::CodewhispererRuntime, "F,C");
+        let res = self
+            .http_client
+            .post(&management_url)
+            .header("Content-Type", "application/x-amz-json-1.0")
+            .header("Authorization", format!("Bearer {access_token}"))
+            .header(
+                "X-Amz-Target",
+                "AmazonCodeWhispererService.ListAvailableModels",
+            )
+            .header("tokentype", "API_KEY")
+            .header("User-Agent", runtime_ua)
+            .header("x-amz-user-agent", runtime_amz_ua)
+            .json(&serde_json::json!({ "origin": "AI_EDITOR", "maxResults": 1 }))
+            .send()
+            .await
+            .map_err(|e| format!("网络错误: {e}"))?;
+
+        let status = res.status();
+        let body = res.text().await.unwrap_or_default();
+        if !status.is_success() {
+            let snippet: String = body.chars().take(240).collect();
+            return Err(format!("ListAvailableModels {status}: {snippet}"));
+        }
+        let value: serde_json::Value =
+            serde_json::from_str(&body).map_err(|e| format!("响应解析失败: {e}"))?;
+        let has_models = value
+            .get("models")
+            .and_then(|m| m.as_array())
+            .map(|a| !a.is_empty())
+            .unwrap_or(false);
+        let has_default = value.get("defaultModel").is_some();
+        if has_models || has_default {
+            Ok(())
+        } else {
+            Err("ListAvailableModels 未返回可用模型".to_string())
+        }
+    }
+
     /// 使用 KIRO_API_KEY（ksk_ 格式）登录。
     ///
     /// API key 本身就是长期有效的 bearer token —— 无需 OIDC 交换、无需 kiro-cli。
