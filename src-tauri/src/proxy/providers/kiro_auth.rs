@@ -1398,9 +1398,22 @@ impl KiroAuthManager {
         if use_api_key {
             req = req.header("tokentype", "API_KEY");
         }
-        let res = req.body("{}").send().await.ok()?;
+        let res = match req.body("{}").send().await {
+            Ok(r) => r,
+            Err(e) => {
+                log::warn!("[Kiro] GetProfile/ListAvailableProfiles network error: {e}");
+                return None;
+            }
+        };
 
         if !res.status().is_success() {
+            let status = res.status();
+            let body = res.text().await.unwrap_or_default();
+            log::warn!(
+                "[Kiro] {} failed status={status} body={}",
+                target,
+                body.chars().take(300).collect::<String>()
+            );
             return None;
         }
 
@@ -1428,7 +1441,12 @@ impl KiroAuthManager {
     /// 使用 KIRO_API_KEY（ksk_ 格式）登录。
     ///
     /// API key 本身就是长期有效的 bearer token —— 无需 OIDC 交换、无需 kiro-cli。
-    /// 仅做一次 GetProfile 校验并解析 profileArn，然后作为本地账号保存。
+    ///
+    /// 注意：部分 `ksk_`（尤其是临时/订阅类 key）对 GetProfile 没有权限，会返回
+    /// `AccessDeniedException: User is not authorized to access this feature`，
+    /// 但 ListAvailableModels / GenerateAssistantResponse 仍然可用。
+    /// 因此登录校验优先尝试 GetProfile 拿 profileArn；失败时回退到 ListAvailableModels
+    /// 验证 key，并允许 profileArn 为空（runtime 请求会省略该字段）。
     pub async fn apikey_login(&self, api_key: &str) -> Result<GitHubAccount, String> {
         let api_key = api_key.trim();
         if !is_api_key(api_key) {
@@ -1438,10 +1456,23 @@ impl KiroAuthManager {
         // API key 由 us-east-1 控制面签发
         let region = "us-east-1".to_string();
 
-        // GetProfile 校验 key 并解析 profileArn（同时验证 key 是否有效）
+        // 1) 尽量获取 profileArn（部分 key 无 GetProfile 权限）
         let profile_arn = self.fetch_profile_arn(api_key, &region).await;
+
+        // 2) 若 GetProfile 失败，用 ListAvailableModels 做有效性校验
         if profile_arn.is_none() {
-            return Err("API Key 被 Kiro 拒绝，请确认 key 有效且未过期".to_string());
+            match self.validate_api_key_via_list_models(api_key, &region).await {
+                Ok(()) => {
+                    log::info!(
+                        "[Kiro] API key login: GetProfile unauthorized/unavailable;                          validated via ListAvailableModels without profileArn"
+                    );
+                }
+                Err(e) => {
+                    return Err(format!(
+                        "API Key 被 Kiro 拒绝，请确认 key 有效且未过期（{e}）"
+                    ));
+                }
+            }
         }
 
         let now = chrono::Utc::now().timestamp_millis();

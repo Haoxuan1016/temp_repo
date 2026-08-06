@@ -72,7 +72,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           New-Item -ItemType Directory -Force -Path release-assets | Out-Null
-          $VERSION = 'v3.18.0-pr5671-4125'
+          $VERSION = 'v3.18.0-pr5671-4125-fix1'
           $targetRoot = 'src-tauri/target/release'
 
           $msi = Get-ChildItem -Path (Join-Path $targetRoot 'bundle/msi') -Recurse -Include *.msi -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -113,7 +113,7 @@ jobs:
       - name: Upload workflow artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: CC-Switch-v3.18.0-pr5671-4125-Windows-x64
+          name: CC-Switch-v3.18.0-pr5671-4125-fix1-Windows-x64
           path: release-assets/*
           if-no-files-found: error
           retention-days: 30
@@ -121,8 +121,8 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v3.18.0-pr5671-4125-win64
-          name: CC Switch v3.18.0 custom (PR #5671 + #4125 Kiro) Windows x64
+          tag_name: v3.18.0-pr5671-4125-fix1-win64
+          name: CC Switch v3.18.0 custom (PR #5671 + #4125 Kiro, ksk_ login fix) Windows x64
           prerelease: true
           generate_release_notes: false
           body: |
@@ -136,11 +136,15 @@ jobs:
             Target: Windows 10/11 x86_64
 
             ### Downloads
-            - **Installer**: `CC-Switch-v3.18.0-pr5671-4125-Windows.msi`
-            - **Portable**: `CC-Switch-v3.18.0-pr5671-4125-Windows-Portable.zip`
+            - **Installer**: `CC-Switch-v3.18.0-pr5671-4125-fix1-Windows.msi`
+            - **Portable**: `CC-Switch-v3.18.0-pr5671-4125-fix1-Windows-Portable.zip`
 
             ### Kiro usage
             In provider form / Auth center, use **KIRO_API_KEY** login and paste a key starting with `ksk_`.
+
+            ### Fix in this build
+            - `ksk_` login no longer hard-requires `GetProfile` (many keys get AccessDenied there)
+            - Falls back to `ListAvailableModels` validation; `profileArn` may be empty
 
             > Unsigned custom build. Windows SmartScreen may warn — More info → Run anyway.
           files: release-assets/*
