@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Why we buy more when price is cheap · A2 Economics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF9F5;
+  --ink:#141413;
+  --mid:#B0AEA5;
+  --light:#E8E6DC;
+  --clay:#D97757;
+  --blue:#6A9BCC;
+  --sage:#788C5D;
+  --sans:'Poppins','General Sans',Inter,system-ui,sans-serif;
+  --serif:'Lora','Source Serif 4','Noto Serif',Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  -webkit-font-smoothing:antialiased;
+}
+/* paper grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9;opacity:.035;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+.deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none}
+.deck::-webkit-scrollbar{display:none}
+section{
+  height:100vh;scroll-snap-align:start;scroll-snap-stop:always;
+  padding:7vh 7vw 13vh 12vw;display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+/* ---------- typography ---------- */
+.eyebrow{
+  font-family:var(--sans);font-size:.7rem;font-weight:500;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--mid);margin:0 0 1.4rem;
+}
+.eyebrow b{color:var(--clay);font-weight:500}
+h1{
+  font-family:var(--sans);font-weight:500;letter-spacing:-.02em;line-height:1.06;
+  font-size:clamp(2.2rem,4.8vw,4rem);margin:0 0 1.5rem;max-width:17ch;position:relative;z-index:1;
+}
+h2{
+  font-family:var(--sans);font-weight:500;letter-spacing:-.015em;line-height:1.12;
+  font-size:clamp(1.7rem,3.1vw,2.6rem);margin:0 0 1rem;max-width:26ch;
+}
+h3{
+  font-family:var(--sans);font-weight:500;font-size:.95rem;letter-spacing:.01em;
+  margin:0 0 .5rem;
+}
+p{font-size:clamp(.95rem,1.12vw,1.08rem);line-height:1.62;max-width:60ch;margin:0 0 1rem;color:#2a2a27}
+.lede{font-size:clamp(1.05rem,1.35vw,1.28rem);line-height:1.6;max-width:52ch}
+em{color:var(--ink)}
+.hl{background:linear-gradient(transparent 62%, rgba(217,119,87,.28) 62%)}
+.clay{color:var(--clay)}
+.sage{color:var(--sage)}
+.blue{color:var(--blue)}
+small{font-family:var(--sans);font-size:.74rem;color:var(--mid);letter-spacing:.02em;line-height:1.5}
+/* ---------- layout helpers ---------- */
+.split{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(2rem,4.4vw,4.4rem);align-items:center}
+.split.wide-left{grid-template-columns:1.25fr .75fr}
+.stack>*+*{margin-top:.9rem}
+.card{
+  background:var(--light);border:1px solid rgba(20,20,19,.07);border-radius:14px;
+  padding:1.15rem 1.3rem;
+}
+.card.plain{background:transparent;border:1px solid var(--mid)}
+.defbox{border-left:2px solid var(--clay);padding:.15rem 0 .15rem 1.1rem;max-width:56ch}
+.defbox p{margin:0}
+.formula{
+  font-family:var(--sans);font-weight:500;font-size:clamp(1rem,1.5vw,1.22rem);
+  letter-spacing:.01em;line-height:1.5;
+}
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;
+  margin:0 .18rem;line-height:1.15;font-size:.86em}
+.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 .28rem 1px}
+.frac span:last-child{padding:1px .28rem 0}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.pillrow{display:flex;gap:.5rem;flex-wrap:wrap}
+.pill{
+  font-family:var(--sans);font-size:.76rem;letter-spacing:.02em;padding:.34rem .7rem;
+  border:1px solid var(--mid);border-radius:999px;color:#3d3c37;background:transparent;
+}
+.pill.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* ---------- buttons ---------- */
+button{
+  font-family:var(--sans);font-size:.82rem;font-weight:500;letter-spacing:.01em;
+  border-radius:999px;padding:.5rem 1.05rem;border:1px solid var(--ink);
+  background:var(--ink);color:var(--paper);cursor:pointer;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,opacity .18s ease;
+}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--mid)}
+button.ghost:hover{border-color:var(--ink)}
+button.clay{background:var(--clay);border-color:var(--clay);color:var(--paper)}
+button:disabled{opacity:.32;cursor:not-allowed}
+button.sq{border-radius:9px;padding:.34rem .72rem;font-size:.9rem;min-width:2.1rem}
+/* ---------- tables ---------- */
+table{border-collapse:collapse;font-family:var(--sans);font-size:.82rem;width:100%}
+th,td{padding:.42rem .5rem;text-align:right;border-bottom:1px solid rgba(20,20,19,.09)}
+th:first-child,td:first-child{text-align:left;color:#3d3c37}
+thead th{font-weight:500;color:var(--mid);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+tbody tr{transition:background .2s ease}
+tbody tr.active{background:rgba(217,119,87,.13)}
+tbody tr.dim td{color:var(--mid)}
+td.mu{color:var(--clay);font-weight:500}
+/* ---------- chrome ---------- */
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--clay);width:0;z-index:40;transition:width .12s linear}
+.rail{position:fixed;left:2.6vw;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:.85rem}
+.rail a{display:flex;align-items:center;gap:.5rem;text-decoration:none}
+.rail i{width:16px;height:1.5px;background:var(--mid);display:block;transition:all .25s ease}
+.rail a.on i{width:30px;background:var(--clay)}
+.rail em{
+  font-family:var(--sans);font-style:normal;font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mid);opacity:0;transition:opacity .25s ease;white-space:nowrap;
+}
+.rail a.on em,.rail:hover a em{opacity:1}
+.rail a.on em{color:var(--ink)}
+.foot{
+  position:fixed;bottom:2.4vh;right:3vw;z-index:30;display:flex;align-items:center;gap:.9rem;
+  font-family:var(--sans);font-size:.7rem;letter-spacing:.1em;color:var(--mid);text-transform:uppercase;
+}
+.foot #clock{font-variant-numeric:tabular-nums;letter-spacing:.06em;color:var(--ink)}
+.foot #clock.over{color:var(--clay)}
+.timing{
+  position:absolute;top:6vh;right:8vw;font-family:var(--sans);font-size:.68rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--mid);
+}
+.cue{position:absolute;bottom:4vh;left:12vw;right:8vw;max-width:74ch}
+.cue small{display:block;border-top:1px solid var(--light);padding-top:.55rem}
+.scrollhint{
+  position:absolute;bottom:4vh;left:12vw;font-family:var(--sans);font-size:.7rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mid);display:flex;gap:.55rem;align-items:center;
+}
+.scrollhint b{display:block;width:1px;height:22px;background:var(--mid);animation:drop 1.9s ease-in-out infinite}
+@keyframes drop{0%,100%{transform:translateY(-4px);opacity:.3}50%{transform:translateY(4px);opacity:1}}
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+section.in .rv{opacity:1;transform:none}
+section.in .rv:nth-child(2){transition-delay:.06s}
+section.in .rv:nth-child(3){transition-delay:.12s}
+section.in .rv:nth-child(4){transition-delay:.18s}
+/* ---------- decorative line art ---------- */
+.blob{position:absolute;pointer-events:none;z-index:0}
+/* ---------- widgets ---------- */
+.readout{display:flex;gap:1.6rem;flex-wrap:wrap;font-family:var(--sans)}
+.readout div{min-width:5.6rem}
+.readout span{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:.18rem}
+.readout b{font-size:1.45rem;font-weight:500;font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:99px;background:var(--clay);transition:width .45s cubic-bezier(.2,.7,.2,1)}
+.bartrack{background:rgba(20,20,19,.08);border-radius:99px;overflow:hidden}
+.goods{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.good{background:var(--light);border:1px solid rgba(20,20,19,.07);border-radius:14px;padding:.95rem 1rem}
+.good.opt{border-color:var(--clay);background:rgba(217,119,87,.09)}
+.good .qty{font-family:var(--sans);font-size:2rem;font-weight:500;line-height:1;margin:.3rem 0 .1rem}
+.verdict{font-family:var(--sans);font-size:.8rem;line-height:1.5;min-height:2.6rem}
+svg .axis{stroke:var(--mid);stroke-width:1}
+svg text{font-family:var(--sans);font-size:8.5px;fill:var(--mid)}
+svg text.val{fill:var(--ink);font-size:9px}
+@media (max-width:900px){
+  section{padding:6vh 7vw 12vh 7vw}
+  .split,.split.wide-left,.goods{grid-template-columns:1fr;gap:1.4rem}
+  .rail{display:none}
+  .cue,.scrollhint{left:7vw}
+  .timing{right:7vw}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+
+<nav class="rail" id="rail"></nav>
+
+<div class="foot">
+  <span>A2 Micro · Utility</span>
+  <span id="clock">4:00</span>
+  <button class="ghost sq" id="timer" style="font-size:.66rem;letter-spacing:.1em">Start</button>
+</div>
+
+<main class="deck" id="deck">
+
+<!-- ============ 0 · TITLE ============ -->
+<section data-label="Hook" data-time="15">
+  <svg class="blob" style="right:5vw;top:24vh;width:23vw;opacity:.9" viewBox="0 0 320 300" fill="none">
+    <line x1="46" y1="252" x2="298" y2="252" stroke="#B0AEA5" stroke-width="1"/>
+    <line x1="46" y1="252" x2="46" y2="34" stroke="#B0AEA5" stroke-width="1"/>
+    <path d="M64 46 C104 92 142 146 190 184 C226 212 258 228 290 238" stroke="#D97757" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="46" y1="112" x2="123" y2="112" stroke="#B0AEA5" stroke-width=".9" stroke-dasharray="3 4"/>
+    <line x1="123" y1="252" x2="123" y2="112" stroke="#B0AEA5" stroke-width=".9" stroke-dasharray="3 4"/>
+    <line x1="46" y1="205" x2="228" y2="205" stroke="#B0AEA5" stroke-width=".9" stroke-dasharray="3 4"/>
+    <line x1="228" y1="252" x2="228" y2="205" stroke="#B0AEA5" stroke-width=".9" stroke-dasharray="3 4"/>
+    <circle cx="123" cy="112" r="5" fill="#D97757"/>
+    <circle cx="228" cy="205" r="4" fill="#141413" opacity=".4"/>
+    <text x="52" y="44" fill="#B0AEA5">price</text>
+    <text x="290" y="270" text-anchor="end" fill="#B0AEA5">quantity</text>
+  </svg>
+  <p class="eyebrow rv">CAIE A2 Economics · Unit 2 <b>·</b> Utility theory</p>
+  <h1 class="rv">Why do we buy more of something when its price falls?</h1>
+  <p class="lede rv">The demand curve slopes downwards. Everyone knows it. But <em>why?</em> Marginal utility theory gives us the answer — and lets us prove it with numbers.</p>
+  <div class="rv pillrow" style="margin-top:1.4rem">
+    <span class="pill">1 · Total &amp; marginal utility</span>
+    <span class="pill">2 · Diminishing MU</span>
+    <span class="pill">3 · Equi-marginal principle</span>
+    <span class="pill">4 · Deriving demand</span>
+  </div>
+  <div class="scrollhint"><b></b> Scroll to advance</div>
+  <div class="timing">4 min · 6 slides</div>
+</section>
+
+<!-- ============ 1 · TU & MU ============ -->
+<section data-label="TU &amp; MU" data-time="40">
+  <div class="timing">~40s</div>
+  <p class="eyebrow rv">Question 1 <b>·</b> Definition &amp; calculation</p>
+  <div class="split">
+    <div class="rv stack">
+      <h2 style="margin-bottom:.8rem">Utility is satisfaction. We measure it in imaginary units: <span class="clay">utils</span>.</h2>
+      <div class="defbox">
+        <p><strong>Total utility (TU)</strong> — the total satisfaction from consuming a given quantity of a good in a time period.</p>
+      </div>
+      <div class="defbox">
+        <p><strong>Marginal utility (MU)</strong> — the <em>extra</em> satisfaction from consuming one more unit.</p>
+      </div>
+      <p class="formula" style="margin-top:1.1rem">
+        MU = <span class="frac"><span>ΔTU</span><span>ΔQ</span></span>
+        <span style="color:var(--mid);font-size:.8em;margin-left:.5rem">and</span>
+        TU = ΣMU
+      </p>
+      <p><small>So MU is the <em>slope</em> of the TU curve, and TU is the running total (area) of the MU column. Never mix them up in an exam.</small></p>
+    </div>
+
+    <div class="rv card" style="padding:1.3rem 1.4rem">
+      <h3>Kai buys cups of coffee <span style="color:var(--mid);font-weight:400">— click a row</span></h3>
+      <table id="tuTable">
+        <thead><tr><th>Cups (Q)</th><th>TU</th><th>MU = ΔTU/ΔQ</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="readout" style="margin-top:1.1rem" id="tuRead"></div>
+      <div id="tuNote" style="font-family:var(--sans);font-size:.78rem;line-height:1.5;color:#3d3c37;margin-top:.85rem;min-height:2.4rem"></div>
+    </div>
+  </div>
+  <div class="cue"><small><strong>Say it:</strong> “TU is the total, MU is the increment. Notice the 3rd cup adds 12 utils, so TU rises from 42 to 54. Watch what happens to that MU column as we go down.”</small></div>
+</section>
+
+<!-- ============ 2 · DIMINISHING MU ============ -->
+<section data-label="Diminishing MU" data-time="40">
+  <div class="timing">~40s</div>
+  <p class="eyebrow rv">Question 2 <b>·</b> The law that drives everything</p>
+  <div class="split wide-left">
+    <div class="rv stack">
+      <h2 style="margin-bottom:.8rem">The law of diminishing marginal utility</h2>
+      <div class="defbox">
+        <p>As <em>more</em> units of a good are consumed within a given time period, the marginal utility gained from each successive unit <em>falls</em>.</p>
+      </div>
+      <p style="margin-bottom:.8rem">Why? Each cup satisfies a <em>less urgent</em> want than the one before. Cup 1 wakes you up; cup 4 just sloshes. Wants get progressively satisfied, so intensity of desire falls.</p>
+      <div class="card plain" style="border-color:var(--light);background:var(--light)">
+        <p style="margin:0"><small style="color:#3d3c37;font-size:.79rem">
+        <strong style="font-family:var(--sans)">Three checkpoints</strong><br>
+        · MU falling but positive: TU still <em>rising</em>, just more slowly<br>
+        · MU = 0: TU at its <span class="clay">maximum</span> (satiation, cup 5)<br>
+        · MU negative: TU <em>falls</em> (disutility — you feel sick)
+        </small></p>
+      </div>
+      <div class="row" style="margin-top:.4rem">
+        <button class="ghost sq" id="dmuTU">Show TU curve</button>
+        <small id="dmuHint">Hover a bar to read its MU.</small>
+      </div>
+    </div>
+    <div class="rv">
+      <svg id="dmuSvg" viewBox="0 0 330 250" style="width:100%;height:auto"></svg>
+    </div>
+  </div>
+  <div class="cue"><small><strong>Say it:</strong> “This is the engine of the whole topic. Because MU falls, the consumer will only take extra units if they’re asked to give up less in return — i.e. if the price is lower.”</small></div>
+</section>
+
+<!-- ============ 3 · EQUI-MARGINAL ============ -->
+<section data-label="Equi-marginal" data-time="55">
+  <div class="timing">~55s</div>
+  <p class="eyebrow rv">Question 3 <b>·</b> Spending a limited budget</p>
+  <div class="split">
+    <div class="rv stack">
+      <h2 style="margin-bottom:.8rem">The equi-marginal principle</h2>
+      <p style="margin-bottom:.7rem">Utility is maximised when the last dollar spent on <em>every</em> good yields the same marginal utility:</p>
+      <p class="formula clay" style="margin:.2rem 0 .9rem">
+        <span class="frac"><span>MU<sub>A</sub></span><span>P<sub>A</sub></span></span> =
+        <span class="frac"><span>MU<sub>B</sub></span><span>P<sub>B</sub></span></span> = … =
+        <span class="frac"><span>MU<sub>N</sub></span><span>P<sub>N</sub></span></span>
+      </p>
+      <p><small>We divide by price because goods cost different amounts — MU alone isn’t comparable. MU/P is “<em>utils per dollar</em>”, or <em>value for money</em>.</small></p>
+      <p style="margin-top:.6rem">If MU<sub>A</sub>/P<sub>A</sub> &gt; MU<sub>B</sub>/P<sub>B</sub>, good A is better value, so the consumer <em>reallocates</em> spending towards A. Buying more of A pushes MU<sub>A</sub> down; buying less of B pushes MU<sub>B</sub> up — until the ratios are equal. That is <span class="hl">consumer equilibrium</span>.</p>
+    </div>
+
+    <div class="rv card" style="padding:1.25rem 1.35rem">
+      <h3>Spend the budget · <span class="clay" id="egBudget">$15</span> <span style="color:var(--mid);font-weight:400">— can you hit the optimum?</span></h3>
+      <div class="goods" style="margin-top:.85rem" id="egGoods"></div>
+      <div style="margin-top:.9rem">
+        <div class="bartrack"><div class="bar" id="egBar" style="width:0%"></div></div>
+        <div class="row" style="justify-content:space-between;margin-top:.4rem">
+          <small id="egSpend">Spent $0 of $15</small>
+          <small>Total utility: <b style="font-family:var(--sans);color:var(--ink);font-size:.9rem" id="egTU">0</b> utils</small>
+        </div>
+      </div>
+      <div class="verdict" id="egVerdict" style="margin-top:.7rem"></div>
+      <div class="row"><button class="ghost sq" id="egReset" style="font-size:.72rem">Reset</button>
+      <button class="sq clay" id="egSolve" style="font-size:.72rem">Show optimum</button></div>
+    </div>
+  </div>
+  <div class="cue"><small><strong>Say it:</strong> “Coffee is $2, a muffin is $3. Rank every possible dollar by utils-per-dollar and buy in that order. At 3 and 3 both goods give 6 utils per dollar — no reshuffle can raise TU above 135.”</small></div>
+</section>
+
+<!-- ============ 4 · DERIVING DEMAND ============ -->
+<section data-label="Demand curve" data-time="65">
+  <div class="timing">~65s</div>
+  <p class="eyebrow rv">Question 4 <b>·</b> The pay-off</p>
+  <div class="split" style="grid-template-columns:1fr 1fr">
+    <div class="rv" style="min-width:0">
+      <h2 style="margin-bottom:.6rem;font-size:clamp(1.5rem,2.5vw,2.1rem)">Deriving the individual demand curve</h2>
+      <p style="margin-bottom:.4rem;font-size:.95rem">In equilibrium the consumer equates value for money across every use of income:</p>
+      <p class="formula" style="margin:.1rem 0 .6rem;font-size:1.02rem"><span class="frac"><span>MU<sub>coffee</sub></span><span>P<sub>coffee</sub></span></span> = MU of money = <span class="clay">6 utils per $</span></p>
+      <p style="margin-bottom:.5rem;font-size:.95rem">Rearranged: <strong>MU = 6 × P</strong>. Buy every cup that clears the bar.</p>
+      <ol style="font-family:var(--sans);font-size:.76rem;line-height:1.45;color:#3d3c37;padding-left:1.1rem;max-width:50ch;margin:0">
+        <li>Price falls, so MU/P rises above 6: better value.</li>
+        <li>Equilibrium disturbed — spending switches <em>into</em> coffee.</li>
+        <li>Extra cups have lower MU, so MU/P falls back to 6.</li>
+        <li>New equilibrium at higher Q. Plot P against Q: demand.</li>
+      </ol>
+      <div class="row" style="margin-top:.75rem">
+        <small style="letter-spacing:.14em;text-transform:uppercase">Set price</small>
+        <span id="dPills" class="pillrow"></span>
+      </div>
+      <div id="dNote" style="font-family:var(--sans);font-size:.75rem;line-height:1.45;color:#3d3c37;margin-top:.55rem;min-height:3rem;max-width:40ch"></div>
+    </div>
+    <div class="rv" style="min-width:0">
+      <svg id="demSvg" viewBox="0 0 300 288" style="width:100%;height:auto;max-height:74vh"></svg>
+    </div>
+  </div>
+  <div class="cue"><small><strong>Say it:</strong> “Each price gives one utility-maximising quantity. Four prices, four points — join them and the demand curve <em>is</em> the MU curve, scaled by the marginal utility of money. Downward-sloping demand is diminishing MU in disguise.”</small></div>
+</section>
+
+<!-- ============ 5 · ANSWER + EVALUATION ============ -->
+<section data-label="Answer" data-time="25">
+  <div class="timing">~25s</div>
+  <svg class="blob" style="right:2vw;bottom:2vh;width:14vw;opacity:.5" viewBox="0 0 200 200" fill="none">
+    <path d="M20 150 C60 150 70 120 95 95 C120 70 150 55 185 50" stroke="#788C5D" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M20 170 C70 168 110 140 140 105 C162 79 175 62 190 58" stroke="#6A9BCC" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
+  </svg>
+  <p class="eyebrow rv">The answer <b>·</b> and where it breaks down</p>
+  <h2 class="rv" style="max-width:40ch;font-size:clamp(1.5rem,2.6vw,2.2rem)">A price cut raises utils per dollar. Diminishing MU decides <span class="clay">how many extra units</span> it takes to restore equilibrium.</h2>
+  <div class="rv" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:62rem;margin-top:.6rem">
+    <div class="card"><h3>Strength</h3><p style="margin:0"><small style="font-size:.78rem;color:#3d3c37">Explains the law of demand from consumer behaviour, and predicts <em>how much</em> more is bought — not just the direction.</small></p></div>
+    <div class="card"><h3>Limitation</h3><p style="margin:0"><small style="font-size:.78rem;color:#3d3c37">Utility is <em>cardinal</em> here: it assumes satisfaction is measurable and comparable. In reality it is only <em>ordinal</em> — we can rank, not count.</small></p></div>
+    <div class="card"><h3>Limitation</h3><p style="margin:0"><small style="font-size:.78rem;color:#3d3c37">Assumes rational, fully-informed consumers with constant tastes and MU of money. Behavioural economics — habit, bounded rationality, conspicuous consumption — challenges this.</small></p></div>
+  </div>
+  <p class="rv" style="margin-top:.9rem;max-width:70ch"><small style="font-size:.78rem">Exam link: indifference curve analysis avoids measuring utility and splits the response to a price change into <span class="blue">substitution</span> and <span class="sage">income</span> effects — the same conclusion, weaker assumptions.</small></p>
+  <div class="cue"><small><strong>Close on:</strong> “So: we buy more when price is cheap because cheapness improves value for money, and diminishing marginal utility fixes exactly how far we go. Questions?”</small></div>
+</section>
+
+</main>
+
+<script>
+/* ================= shared data (one consistent example all deck long) ================= */
+const COFFEE = { name:'Coffee', unit:'cup', P:2, MU:[24,18,12,6,0] };   // TU: 24,42,54,60,60
+const MUFFIN = { name:'Muffin', unit:'muffin', P:3, MU:[36,27,18,9,3] }; // TU: 36,63,81,90,93
+const BUDGET = 15, LAMBDA = 6;                     // MU of money = 6 utils per $
+const tuOf = (g,q)=>g.MU.slice(0,q).reduce((a,b)=>a+b,0);
+
+/* ================= chrome: rail, progress, reveal ================= */
+const deck = document.getElementById('deck');
+const secs = [...document.querySelectorAll('section')];
+const rail = document.getElementById('rail');
+secs.forEach((s,i)=>{
+  const a=document.createElement('a');
+  a.href='#'; a.innerHTML='<i></i><em>'+s.dataset.label+'</em>';
+  a.onclick=e=>{e.preventDefault();s.scrollIntoView()};
+  rail.appendChild(a);
+});
+const dots=[...rail.children];
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.intersectionRatio>.5){
+      e.target.classList.add('in');
+      const i=secs.indexOf(e.target);
+      dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+    }
+  });
+},{threshold:[.5]});
+secs.forEach(s=>io.observe(s));
+secs[0].classList.add('in');
+deck.addEventListener('scroll',()=>{
+  const p=deck.scrollTop/(deck.scrollHeight-deck.clientHeight)*100;
+  document.getElementById('prog').style.width=p+'%';
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  const i=Math.round(deck.scrollTop/window.innerHeight);
+  if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();secs[Math.min(i+1,secs.length-1)].scrollIntoView();}
+  if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();secs[Math.max(i-1,0)].scrollIntoView();}
+});
+
+/* ================= 4-minute presenter timer ================= */
+let left=240,tick=null;
+const clock=document.getElementById('clock'),tbtn=document.getElementById('timer');
+const fmt=s=>(s<0?'-':'')+Math.floor(Math.abs(s)/60)+':'+String(Math.abs(s)%60).padStart(2,'0');
+tbtn.onclick=()=>{
+  if(tick){clearInterval(tick);tick=null;tbtn.textContent='Resume';return;}
+  tbtn.textContent='Pause';
+  tick=setInterval(()=>{left--;clock.textContent=fmt(left);clock.classList.toggle('over',left<0);},1000);
+};
+
+/* ================= SLIDE 1 · TU / MU table ================= */
+const tbody=document.querySelector('#tuTable tbody');
+const tuRead=document.getElementById('tuRead'), tuNote=document.getElementById('tuNote');
+const notes=[
+  'Zero cups, zero satisfaction. Baseline.',
+  'First cup: MU = 24 − 0 = 24 utils. With one unit, TU = MU.',
+  'MU = 42 − 24 = <strong>18</strong>. TU is still climbing, but by less.',
+  'MU = 54 − 42 = <strong>12</strong>. Half the satisfaction of cup 1, from an identical cup.',
+  'MU = 60 − 54 = <strong>6</strong>. Barely worth having.',
+  'MU = 0. Nothing added — TU is at its <span class="clay">maximum</span>. Satiation point.'
+];
+function drawTU(sel){
+  tbody.innerHTML='';
+  for(let q=0;q<=5;q++){
+    const tr=document.createElement('tr');
+    tr.className=(q===sel?'active':(q>sel?'dim':''));
+    const mu=q===0?'—':COFFEE.MU[q-1];
+    tr.innerHTML=`<td>${q}</td><td>${tuOf(COFFEE,q)}</td><td class="mu">${mu}</td>`;
+    tr.onclick=()=>drawTU(q);
+    tr.style.cursor='pointer';
+    tbody.appendChild(tr);
+  }
+  tuRead.innerHTML=`<div><span>Cups</span><b>${sel}</b></div>
+    <div><span>Total utility</span><b>${tuOf(COFFEE,sel)}</b></div>
+    <div><span>Marginal utility</span><b class="clay" style="color:var(--clay)">${sel===0?'—':COFFEE.MU[sel-1]}</b></div>`;
+  tuNote.innerHTML=notes[sel];
+}
+drawTU(3);
+
+/* ================= SLIDE 2 · diminishing MU chart ================= */
+const dsvg=document.getElementById('dmuSvg');
+let showTU=false;
+const X0=42,Y0=205,XW=250,YH=170,MAXMU=26,MAXTU=64;
+function dmuDraw(hover=-1){
+  const bw=XW/6, muY=v=>Y0-(v/MAXMU)*YH, tuY=v=>Y0-(v/MAXTU)*YH;
+  let s=`<text x="${X0-22}" y="${Y0-YH-6}">utils</text>
+  <line class="axis" x1="${X0}" y1="${Y0}" x2="${X0+XW}" y2="${Y0}"/>
+  <line class="axis" x1="${X0}" y1="${Y0-YH-4}" x2="${X0}" y2="${Y0}"/>
+  <text x="${X0+XW-4}" y="${Y0+26}" text-anchor="end">cups of coffee per day</text>`;
+  COFFEE.MU.forEach((v,i)=>{
+    const x=X0+8+i*bw, h=Math.max((v/MAXMU)*YH,1.5), on=i===hover;
+    s+=`<rect x="${x}" y="${muY(v)}" width="${bw-14}" height="${h}" rx="3"
+      fill="${on?'#D97757':'rgba(217,119,87,.55)'}" style="cursor:pointer" data-i="${i}"/>`;
+    s+=`<text class="val" x="${x+(bw-14)/2}" y="${muY(v)-4}" text-anchor="middle" ${on?'':'opacity=".55"'}>${v}</text>`;
+    s+=`<text x="${x+(bw-14)/2}" y="${Y0+13}" text-anchor="middle">${i+1}</text>`;
+  });
+  // MU trend line
+  const pts=COFFEE.MU.map((v,i)=>`${X0+8+i*bw+(bw-14)/2},${muY(v)}`).join(' ');
+  s+=`<polyline points="${pts}" fill="none" stroke="#141413" stroke-width="1.2" stroke-dasharray="3 3" opacity=".5"/>`;
+  s+=`<text x="${X0+XW-2}" y="${muY(2)}" text-anchor="end" fill="#141413" opacity=".6">MU falling</text>`;
+  if(showTU){
+    // TU polyline anchored at bar centres
+    const tp2=[`${X0},${tuY(0)}`].concat(COFFEE.MU.map((v,i)=>`${X0+8+i*bw+(bw-14)/2},${tuY(tuOf(COFFEE,i+1))}`));
+    s+=`<polyline points="${tp2.join(' ')}" fill="none" stroke="#788C5D" stroke-width="2" stroke-linecap="round"/>`;
+    const lx=X0+8+4*bw+(bw-14)/2;
+    s+=`<circle cx="${lx}" cy="${tuY(60)}" r="3.5" fill="#788C5D"/>
+        <line x1="${lx}" y1="${tuY(60)}" x2="${lx}" y2="${muY(0)}" stroke="#788C5D" stroke-width="1" stroke-dasharray="2 3" opacity=".7"/>
+        <text x="${lx-6}" y="${tuY(60)-7}" text-anchor="end" fill="#788C5D">TU max (60) where MU = 0</text>`;
+  }
+  dsvg.innerHTML=s;
+  dsvg.querySelectorAll('rect').forEach(r=>{
+    r.onmouseenter=()=>dmuDraw(+r.dataset.i);
+    r.onmouseleave=()=>dmuDraw(-1);
+  });
+}
+dmuDraw();
+document.getElementById('dmuTU').onclick=e=>{
+  showTU=!showTU;
+  e.target.textContent=showTU?'Hide TU curve':'Show TU curve';
+  e.target.classList.toggle('ghost',!showTU);
+  document.getElementById('dmuHint').innerHTML=showTU
+    ? 'TU rises while MU &gt; 0, peaks where MU = 0.'
+    : 'Hover a bar to read its MU.';
+  dmuDraw();
+};
+
+/* ================= SLIDE 3 · equi-marginal allocator ================= */
+const eg={c:0,m:0};
+const egGoods=document.getElementById('egGoods');
+function egRender(){
+  const spent=eg.c*COFFEE.P+eg.m*MUFFIN.P, tu=tuOf(COFFEE,eg.c)+tuOf(MUFFIN,eg.m);
+  const optimum=(eg.c===3&&eg.m===3);
+  const data=[[COFFEE,'c'],[MUFFIN,'m']];
+  egGoods.innerHTML=data.map(([g,k])=>{
+    const q=eg[k], last=q>0?g.MU[q-1]:null;
+    return `<div class="good ${optimum?'opt':''}">
+      <small style="letter-spacing:.12em;text-transform:uppercase">${g.name} · $${g.P}</small>
+      <div class="qty">${q}</div>
+      <small>MU of last unit: <b style="color:var(--ink)">${last===null?'—':last}</b><br>
+      MU/P = <b style="color:var(--clay)">${last===null?'—':(last/g.P)}</b> utils per $</small>
+      <div class="row" style="margin-top:.6rem">
+        <button class="sq ghost" data-a="-${k}" ${q===0?'disabled':''}>−</button>
+        <button class="sq" data-a="+${k}" ${(q>=5||spent+g.P>BUDGET)?'disabled':''}>+</button>
+      </div></div>`;
+  }).join('');
+  document.getElementById('egBar').style.width=(spent/BUDGET*100)+'%';
+  document.getElementById('egSpend').textContent=`Spent $${spent} of $${BUDGET}`;
+  document.getElementById('egTU').textContent=tu;
+  const rc=eg.c>0?COFFEE.MU[eg.c-1]/COFFEE.P:null, rm=eg.m>0?MUFFIN.MU[eg.m-1]/MUFFIN.P:null;
+  const v=document.getElementById('egVerdict');
+  if(optimum){
+    v.innerHTML=`<span class="clay"><strong>Consumer equilibrium reached.</strong></span> MU<sub>C</sub>/P<sub>C</sub> = 12/2 = <strong>6</strong> = 18/3 = MU<sub>M</sub>/P<sub>M</sub>, and all $15 is spent. TU = <strong>135</strong> — the maximum possible.`;
+  } else if(spent<BUDGET){
+    const stuck=(eg.c>=5||spent+COFFEE.P>BUDGET)&&(eg.m>=5||spent+MUFFIN.P>BUDGET);
+    v.innerHTML = stuck
+      ? `$${BUDGET-spent} stranded and nothing left worth buying — this mix wastes income. Reset and buy in order of utils per dollar.`
+      : `$${BUDGET-spent} unspent — utility can still rise. Keep buying whichever good offers more utils per dollar.`;
+  } else if(rc!==null&&rm!==null&&rc>rm){
+    v.innerHTML=`Budget spent, but MU<sub>C</sub>/P<sub>C</sub> (${rc}) &gt; MU<sub>M</sub>/P<sub>M</sub> (${rm}). Coffee is better value: swap a muffin for coffee and TU rises.`;
+  } else if(rc!==null&&rm!==null&&rm>rc){
+    v.innerHTML=`Budget spent, but MU<sub>M</sub>/P<sub>M</sub> (${rm}) &gt; MU<sub>C</sub>/P<sub>C</sub> (${rc}). Muffins are better value: reallocate towards muffins.`;
+  } else {
+    v.innerHTML=`Budget spent, but the mix is unbalanced — one good is still better value at the margin.`;
+  }
+  egGoods.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const a=b.dataset.a; eg[a[1]] += a[0]==='+'?1:-1; egRender();
+  });
+}
+document.getElementById('egReset').onclick=()=>{eg.c=0;eg.m=0;egRender();};
+document.getElementById('egSolve').onclick=()=>{eg.c=3;eg.m=3;egRender();};
+egRender();
+
+/* ================= SLIDE 4 · derive demand ================= */
+const dsv=document.getElementById('demSvg'), dPills=document.getElementById('dPills');
+const PRICES=[4,3,2,1], seen=new Set([2]); let curP=2;
+const qAt=P=>COFFEE.MU.filter(mu=>mu>=LAMBDA*P).length;
+function demDraw(){
+  const bar=LAMBDA*curP, q=qAt(curP);
+  // left mini chart: MU bars vs threshold ; right: demand plane
+  const ax=34,ay=106,aw=150,ah=88,MX=26;
+  const muY=v=>ay-(v/MX)*ah, bw=aw/5;
+  let s=`<text x="${ax-26}" y="${ay-ah-6}">MU</text>
+    <line class="axis" x1="${ax}" y1="${ay}" x2="${ax+aw}" y2="${ay}"/>
+    <line class="axis" x1="${ax}" y1="${ay-ah-4}" x2="${ax}" y2="${ay}"/>
+    <text x="${ax+aw}" y="${ay+24}" text-anchor="end">cups</text>`;
+  COFFEE.MU.forEach((v,i)=>{
+    const buy=v>=bar,x=ax+4+i*bw;
+    s+=`<rect x="${x}" y="${muY(v)}" width="${bw-8}" height="${Math.max((v/MX)*ah,1.2)}" rx="2"
+        fill="${buy?'#D97757':'#E8E6DC'}" stroke="${buy?'none':'#B0AEA5'}" stroke-width=".6"/>`;
+    s+=`<text x="${x+(bw-8)/2}" y="${ay+11}" text-anchor="middle">${i+1}</text>`;
+  });
+  s+=`<line x1="${ax}" y1="${muY(bar)}" x2="${ax+aw+6}" y2="${muY(bar)}" stroke="#141413" stroke-width="1.1" stroke-dasharray="4 3"/>
+      <text class="val" x="${ax+aw+8}" y="${muY(bar)+3}">MU = 6P = ${bar}</text>
+      <text x="${ax}" y="${ay+36}" fill="#3d3c37">Buy every cup above the bar: Q = ${q}</text>`;
+  // demand plane
+  const bx=52,by=274,bw2=200,bh=108, px=q=>bx+(q/5)*bw2, py=p=>by-(p/5)*bh;
+  s+=`<text x="${bx-32}" y="${by-bh-10}">Price ($)</text>
+     <line class="axis" x1="${bx}" y1="${by}" x2="${bx+bw2}" y2="${by}"/>
+     <line class="axis" x1="${bx}" y1="${by-bh-6}" x2="${bx}" y2="${by}"/>
+     <text x="${bx+bw2}" y="${by+22}" text-anchor="end">Quantity demanded</text>`;
+  for(let p=1;p<=4;p++) s+=`<text x="${bx-7}" y="${py(p)+3}" text-anchor="end">${p}</text>`;
+  for(let n=1;n<=5;n++) s+=`<text x="${px(n)}" y="${by+12}" text-anchor="middle">${n}</text>`;
+  if(seen.size>1){
+    const line=PRICES.filter(p=>seen.has(p)).sort((a,b)=>b-a).map(p=>`${px(qAt(p))},${py(p)}`).join(' ');
+    s+=`<polyline points="${line}" fill="none" stroke="#D97757" stroke-width="1.8" stroke-linecap="round"/>`;
+  }
+  [...seen].forEach(p=>{
+    const on=p===curP;
+    s+=`<circle cx="${px(qAt(p))}" cy="${py(p)}" r="${on?4.5:3}" fill="${on?'#D97757':'#141413'}" opacity="${on?1:.45}"/>`;
+  });
+  s+=`<line x1="${bx}" y1="${py(curP)}" x2="${px(q)}" y2="${py(curP)}" stroke="#B0AEA5" stroke-width=".8" stroke-dasharray="2 3"/>
+      <line x1="${px(q)}" y1="${by}" x2="${px(q)}" y2="${py(curP)}" stroke="#B0AEA5" stroke-width=".8" stroke-dasharray="2 3"/>`;
+  if(seen.size===4) s+=`<text x="${px(1)+10}" y="${py(4)-2}" fill="#D97757">D · individual demand</text>`;
+  dsv.innerHTML=s;
+  dPills.innerHTML=PRICES.map(p=>`<button class="pill ${p===curP?'on':''}" data-p="${p}" style="cursor:pointer">$${p}</button>`).join('');
+  dPills.querySelectorAll('button').forEach(b=>b.onclick=()=>{curP=+b.dataset.p;seen.add(curP);demDraw();});
+  const note=document.getElementById('dNote');
+  note.innerHTML = curP===2
+    ? `Start here: at $2 a cup must yield 12 utils, so <strong>Q = 3</strong>. Cup 4 gives only 6 — not worth $2.`
+    : `At $${curP} the bar sits at MU = ${bar}, so <strong>Q = ${q}</strong>. `+(curP<2
+      ? `Cheaper, so MU/P rises: buy more until MU falls back into line.`
+      : `Dearer, so MU/P falls: cut back until the cups left justify the price.`)
+      + (seen.size===4?` <span class="clay">All four points plotted.</span>`:``);
+}
+demDraw();
+</script>
+</body>
+</html>
