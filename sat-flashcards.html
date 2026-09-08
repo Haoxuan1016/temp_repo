@@ -562,6 +562,61 @@
       }
     }
   
+    html::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: transparent;
+      opacity: 0;
+      transition: opacity 0.32s ease, background-color 0.32s ease;
+    }
+    html.flash-ok::before {
+      opacity: 1;
+      background: rgba(44, 106, 74, 0.16);
+    }
+    html.flash-bad::before {
+      opacity: 1;
+      background: rgba(176, 61, 44, 0.16);
+    }
+    .app { position: relative; z-index: 1; }
+
+    body.flash-ok {
+      background:
+        radial-gradient(900px 420px at 50% -8%, #e8f5ee 0%, transparent 60%),
+        #e7efe9;
+    }
+    body.flash-bad {
+      background:
+        radial-gradient(900px 420px at 50% -8%, #f8eeeb 0%, transparent 60%),
+        #efe6e3;
+    }
+
+    .card.flash-ok {
+      background: #dcefe4;
+      border-color: rgba(44, 106, 74, 0.38);
+      box-shadow:
+        0 0 0 2px rgba(44, 106, 74, 0.14),
+        0 18px 40px rgba(44, 106, 74, 0.12);
+    }
+    .card.flash-bad {
+      background: #f3ddd8;
+      border-color: rgba(176, 61, 44, 0.38);
+      box-shadow:
+        0 0 0 2px rgba(176, 61, 44, 0.14),
+        0 18px 40px rgba(176, 61, 44, 0.12);
+    }
+    .card.flash-ok .hint-tap { color: var(--ok); }
+    .card.flash-bad .hint-tap { color: var(--bad); }
+
+    .card.fly-left.fly-fast,
+    .card.fly-right.fly-fast {
+      transition:
+        transform 0.08s var(--ease-exit),
+        opacity 0.07s linear;
+    }
+
     .stage {
       height: min(38vh, 280px);
     }
@@ -799,7 +854,7 @@
           <button class="choice" type="button" data-key="j" data-slot="2"><kbd>J</kbd><span class="choice-text"></span></button>
           <button class="choice" type="button" data-key="l" data-slot="3"><kbd>L</kbd><span class="choice-text"></span></button>
         </div>
-        <p class="keys"><span><b>A</b> <b>F</b>　<b>J</b> <b>L</b> 对应四个选项</span><span>点按也可作答</span></p>
+        <p class="keys"><span><b>A</b> <b>F</b>　<b>J</b> <b>L</b> 选义</span><span>答完后 <b>Space</b> 立刻切下一张</span></p>
         <div class="pause-overlay hidden" id="pauseOverlay">
           <div class="pause-title">已暂停</div>
           <p class="pause-note">进度已写入本机。可以放心离开，回来点右上角继续。</p>
@@ -864,8 +919,62 @@
     let shuffleOn = true;
     let sessionSeed = 1;
     let advanceTimer = 0;
+    let skipAdvance = false;
+    let sleeper = null;
 
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    function sleep(ms, minOnSkip = 0) {
+      if (skipAdvance) return wait(minOnSkip);
+      return new Promise((resolve) => {
+        const start = performance.now();
+        const timer = setTimeout(finish, ms);
+        function finish() {
+          if (sleeper && sleeper.timer === timer) sleeper = null;
+          resolve();
+        }
+        sleeper = {
+          timer,
+          kick: () => {
+            clearTimeout(timer);
+            sleeper = null;
+            const extra = Math.max(0, minOnSkip - (performance.now() - start));
+            if (extra) setTimeout(resolve, extra);
+            else resolve();
+          }
+        };
+      });
+    }
+
+    function skipToNext() {
+      if (paused || !locked || !advanceTimer) return;
+      skipAdvance = true;
+      document.querySelectorAll(".card.fly-left, .card.fly-right").forEach((el) => {
+        el.classList.add("fly-fast");
+      });
+      if (sleeper) sleeper.kick();
+    }
+
+    function setFlash(ok) {
+      const cls = ok ? "flash-ok" : "flash-bad";
+      document.documentElement.classList.remove("flash-ok", "flash-bad");
+      document.body.classList.remove("flash-ok", "flash-bad");
+      document.documentElement.classList.add(cls);
+      document.body.classList.add(cls);
+      active.classList.remove("flash-ok", "flash-bad");
+      active.classList.add(cls);
+    }
+
+    function clearPageFlash() {
+      document.documentElement.classList.remove("flash-ok", "flash-bad");
+      document.body.classList.remove("flash-ok", "flash-bad");
+    }
+
+    function clearAllFlash() {
+      clearPageFlash();
+      cardA.classList.remove("flash-ok", "flash-bad", "fly-fast");
+      cardB.classList.remove("flash-ok", "flash-bad", "fly-fast");
+    }
 
     function shuffle(arr, rand) {
       const a = arr.slice();
@@ -986,7 +1095,12 @@
       home.classList.toggle("hidden", el !== home);
       study.classList.toggle("hidden", el !== study);
       results.classList.toggle("hidden", el !== results);
-      if (el !== study) setPaused(false, { persistFlag: false });
+      if (el !== study) {
+        skipAdvance = false;
+        advanceTimer = 0;
+        clearAllFlash();
+        setPaused(false, { persistFlag: false });
+      }
     }
 
     function paintChoices() {
@@ -1124,8 +1238,10 @@
     function renderPair(opts) {
       const keep = opts && opts.keepQuestion;
       if (!keep) currentQ = deck[i] ? makeQuestion(deck[i]) : null;
-      active.classList.remove("revealed", "fly-left", "fly-right");
-      waiting.classList.remove("revealed", "fly-left", "fly-right");
+      skipAdvance = false;
+      clearAllFlash();
+      active.classList.remove("revealed", "fly-left", "fly-right", "fly-fast");
+      waiting.classList.remove("revealed", "fly-left", "fly-right", "fly-fast");
       active.innerHTML = cardHTML(deck[i], false);
       waiting.innerHTML = cardHTML(deck[i + 1], false);
       waiting.style.visibility = deck[i + 1] ? "visible" : "hidden";
@@ -1137,6 +1253,8 @@
       if (paused || locked || !deck[i] || !currentQ) return;
       if (slot < 0 || slot > 3) return;
       locked = true;
+      skipAdvance = false;
+      advanceTimer = 1;
       const ok = slot === currentQ.correct;
       if (!ok) missed.push(deck[i]);
 
@@ -1147,22 +1265,25 @@
         else btn.classList.add("dim");
       });
       active.classList.add("revealed");
+      setFlash(ok);
       const hint = active.querySelector(".hint-tap");
       if (hint) hint.textContent = ok ? "正确" : "正确答案已标出";
 
       persist();
       const delay = ok ? 850 : 1450;
-      advanceTimer = 1;
-      await wait(delay);
-      while (paused && advanceTimer) await wait(120);
+      await sleep(delay, 0);
+      while (paused && advanceTimer) await sleep(120, 0);
       if (!advanceTimer || study.classList.contains("hidden")) return;
 
       const outgoing = active;
       const incoming = waiting;
+      if (skipAdvance) outgoing.classList.add("fly-fast");
       outgoing.classList.add(ok ? "fly-left" : "fly-right");
+      clearPageFlash();
 
       if (i + 1 >= deck.length) {
-        await wait(300);
+        await sleep(300, 80);
+        clearAllFlash();
         finish();
         return;
       }
@@ -1176,7 +1297,7 @@
       paintProgress();
       paintChoices();
       persist();
-      await wait(300);
+      await sleep(300, 80);
 
       waiting.classList.add("instant");
       waiting.className = "card waiting instant";
@@ -1184,6 +1305,8 @@
       waiting.style.visibility = deck[i + 1] ? "visible" : "hidden";
       waiting.offsetHeight;
       waiting.classList.remove("instant");
+      skipAdvance = false;
+      advanceTimer = 0;
       locked = false;
       paintChoices();
     }
@@ -1314,6 +1437,11 @@
       if (tag === "INPUT" || tag === "TEXTAREA") return;
       if (study.classList.contains("hidden")) return;
       const key = e.key.toLowerCase();
+      if (e.code === "Space" || key === " ") {
+        e.preventDefault();
+        if (!paused) skipToNext();
+        return;
+      }
       if (key === "escape") {
         e.preventDefault();
         setPaused(!paused);
