@@ -1,0 +1,141 @@
+name: Build Windows x64 (PR #5671 custom)
+
+on:
+  push:
+    branches:
+      - 'cursor/cc-switch-pr5671-win64-bb73'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: build-windows-x64-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-windows-x64:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-store
+        shell: bash
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install frontend deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Disable updater artifacts for unsigned custom build
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $confPath = 'src-tauri/tauri.conf.json'
+          $json = Get-Content $confPath -Raw | ConvertFrom-Json
+          $json.bundle.createUpdaterArtifacts = $false
+          $json.bundle.targets = @('msi')
+          $json | ConvertTo-Json -Depth 100 | Set-Content $confPath -Encoding UTF8
+
+      - name: Build Tauri App (Windows x64)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          pnpm tauri build --bundles msi
+
+      - name: Package MSI + Portable zip
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path release-assets | Out-Null
+          $VERSION = 'v3.18.0-pr5671'
+          $targetRoot = 'src-tauri/target/release'
+
+          $msi = Get-ChildItem -Path (Join-Path $targetRoot 'bundle/msi') -Recurse -Include *.msi -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($null -eq $msi) {
+            $msi = Get-ChildItem -Path (Join-Path $targetRoot 'bundle') -Recurse -Include *.msi -ErrorAction SilentlyContinue | Select-Object -First 1
+          }
+          if ($null -eq $msi) { throw 'No Windows MSI installer found' }
+          $msiName = "CC-Switch-$VERSION-Windows.msi"
+          Copy-Item $msi.FullName (Join-Path release-assets $msiName)
+          Write-Host "Installer copied: $msiName"
+
+          $exeCandidates = @(
+            'src-tauri/target/release/cc-switch.exe',
+            'src-tauri/target/x86_64-pc-windows-msvc/release/cc-switch.exe'
+          )
+          $exePath = $exeCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if ($null -eq $exePath) { throw 'Portable exe not found' }
+
+          $portableDir = 'release-assets/CC-Switch-Portable'
+          New-Item -ItemType Directory -Force -Path $portableDir | Out-Null
+          Copy-Item $exePath $portableDir
+          @(
+            '# CC Switch portable build marker',
+            'portable=true',
+            'custom=pr5671',
+            'source=https://github.com/farion1231/cc-switch/pull/5671',
+            'commit=395d40b67858f4fa5f8c3aa7522ddf5b12d611fb'
+          ) | Set-Content -Path (Join-Path $portableDir 'portable.ini') -Encoding UTF8
+
+          $portableZip = "release-assets/CC-Switch-$VERSION-Windows-Portable.zip"
+          Compress-Archive -Path "$portableDir/*" -DestinationPath $portableZip -Force
+          Remove-Item -Recurse -Force $portableDir
+          Write-Host "Portable zip created: $portableZip"
+          Get-ChildItem release-assets | Format-Table Name, Length
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: CC-Switch-v3.18.0-pr5671-Windows-x64
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v3.18.0-pr5671-win64
+          name: CC Switch v3.18.0-pr5671 (Windows x64 custom)
+          prerelease: true
+          generate_release_notes: false
+          body: |
+            ## Custom Windows x64 build from pending PR
+
+            - Upstream PR: https://github.com/farion1231/cc-switch/pull/5671
+            - Commit: `395d40b67858f4fa5f8c3aa7522ddf5b12d611fb`
+            - Fix: wrapped OpenAI chat responses + repeated `finish_reason` stream handling
+            - Target: Windows 10/11 x86_64
+
+            ### Downloads
+            - **Installer**: `CC-Switch-v3.18.0-pr5671-Windows.msi` (recommended overwrite/upgrade)
+            - **Portable**: `CC-Switch-v3.18.0-pr5671-Windows-Portable.zip`
+
+            > Unsigned custom build. Windows SmartScreen may warn on first launch — choose More info → Run anyway.
+          files: release-assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
