@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>9618 Chapter 15 Review Paper — Mark Scheme</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<article class="sheet">
+  <p class="kicker">Mark scheme · not for use while sitting the paper</p>
+  <h1>Chapter 15 Review Paper</h1>
+  <p class="sub">Mark scheme. Maximum mark: 75</p>
+  <p class="zh" style="margin-top:0.55rem">对照哪道真题、这题在卡什么，写在每题下面。原题的图和数字跟这套不一样。</p>
+
+  <table class="meta">
+    <tr><td>1</td><td>12</td><td>9618/31/O/N/22 Q10 and 9618/31/M/J/24 Q11</td></tr>
+    <tr><td>2</td><td>12</td><td>9618/32/M/J/22 Q5, plus the massively-parallel definition</td></tr>
+    <tr><td>3</td><td>15</td><td>9618/32/M/J/22 Q6(b) and 9618/31/M/J/21 Q7</td></tr>
+    <tr><td>4</td><td>14</td><td>9618/32/O/N/22 Q8(a)(b)</td></tr>
+    <tr><td>5</td><td>10</td><td>9618/32/O/N/22 Q8(c), new expression</td></tr>
+    <tr><td>6</td><td>12</td><td>9618/31/O/N/22 Q7 and 9618/31/M/J/23 Q7</td></tr>
+  </table>
+  <p class="small">Award positive marks. Follow an incorrect truth table or an incorrect but consistent set of loops when the later part says so. Do not award the same fact twice.</p>
+
+  <section class="ms-part">
+    <h2>Question 1 &nbsp; [12]</h2>
+    <h3>(a) [3]</h3>
+    <table class="tick">
+      <tr><th>Statement</th><th>Answer</th></tr>
+      <tr><td>An instruction is normally executed in one clock cycle.</td><td>RISC</td></tr>
+      <tr><td>The control unit is microprogrammed.</td><td>CISC</td></tr>
+      <tr><td>The processor has a large number of general-purpose registers.</td><td>RISC</td></tr>
+      <tr><td>Instructions can have different lengths.</td><td>CISC</td></tr>
+      <tr><td>Memory is accessed only by load and store instructions.</td><td>RISC</td></tr>
+      <tr><td>The instruction set provides many addressing modes.</td><td>CISC</td></tr>
+    </table>
+    <p class="award">6 correct rows = 3 marks. 4 or 5 = 2. 2 or 3 = 1. 0 or 1 = 0. A row with both boxes ticked, or neither box ticked, is wrong.</p>
+    <p class="trap">卡点：寄存器多是 RISC。微程序控制单元是 CISC。只有 load 和 store 能访问内存的是 RISC。</p>
+
+    <h3>(b) [3]</h3>
+    <p>Any three points.</p>
+    <ul class="pts">
+      <li>An instruction is split into stages, for example fetch, decode, operand fetch, execute and write-back. Naming two stages is enough for this point.</li>
+      <li>Stages of different instructions overlap, so more than one instruction is in progress in the same clock cycle.</li>
+      <li>Each stage is completed in one clock cycle.</li>
+      <li>Once the pipeline is full, one instruction can finish on each clock cycle.</li>
+      <li>A register between stages holds the result of that stage.</li>
+    </ul>
+    <p class="award">“It is faster” with no mechanism does not score.</p>
+
+    <h3>(c) [4]</h3>
+    <p>Any four points.</p>
+    <ul class="pts">
+      <li>A RISC instruction takes one clock cycle, so the processor can check for an interrupt after every short instruction.</li>
+      <li>A CISC instruction can take several cycles, and the number of cycles varies, so the interrupt waits until that long instruction has finished.</li>
+      <li>Several instructions are already in the pipeline when the interrupt is recognised.</li>
+      <li>Instructions still in the pipeline are flushed. Accept the alternative: the contents of the pipeline stages are saved in registers and restored after the interrupt.</li>
+      <li>The instruction that has reached write-back is allowed to finish. Accept “the current instruction is completed”.</li>
+      <li>The program counter and the other registers are saved, the interrupt service routine runs, and they are restored afterwards.</li>
+      <li>After the routine, the pipeline has to be filled again, so frequent interrupts remove much of the gain from pipelining.</li>
+    </ul>
+    <p class="trap">卡点：只写 “pipeline is flushed” 不够。CISC 那一条指令可能很长，也要写到。</p>
+
+    <h3>(d) [2]</h3>
+    <p>Any two points.</p>
+    <ul class="pts">
+      <li>Operands are taken from registers, so a typical instruction does not wait for main memory.</li>
+      <li>That is what keeps instructions single-cycle, because only load and store instructions access memory.</li>
+      <li>Each pipeline stage needs a register for its intermediate value.</li>
+      <li>A memory access in the middle of an instruction would stall the pipeline.</li>
+    </ul>
+  </section>
+
+  <section class="ms-part">
+    <h2>Question 2 &nbsp; [12]</h2>
+    <h3>(a) [2]</h3>
+    <table class="tick">
+      <tr><th>Abbreviation</th><th>Full name</th></tr>
+      <tr><td>SISD</td><td>Single Instruction Single Data</td></tr>
+      <tr><td>SIMD</td><td>Single Instruction Multiple Data</td></tr>
+      <tr><td>MISD</td><td>Multiple Instruction Single Data</td></tr>
+      <tr><td>MIMD</td><td>Multiple Instruction Multiple Data</td></tr>
+    </table>
+    <p class="award">One mark for every two correct rows. Accept Multiple or Many. Accept Instruction or Instructions. Commas are not required. Do not accept a row that swaps Instruction and Data.</p>
+
+    <h3>(b) [3]</h3>
+    <p>One mark each.</p>
+    <ul class="pts">
+      <li>System 1: SISD</li>
+      <li>System 2: SIMD</li>
+      <li>System 3: MIMD</li>
+    </ul>
+    <p class="award">Accept the full name. System 3 is not SIMD: the instructions are different, and so are the data.</p>
+    <p class="trap">卡点：System 2 是同一条指令、不同数据。System 3 四个处理器在做不同的指令，是 MIMD。</p>
+
+    <h3>(c) [3]</h3>
+    <p>Any three points. Repeating only the expanded name does not score.</p>
+    <ul class="pts">
+      <li>There is more than one processor.</li>
+      <li>Each processor executes a different instruction.</li>
+      <li>Every processor uses the same data, or the same data stream.</li>
+      <li>It is rarely used in an ordinary computer because it is difficult to keep several different instructions working on exactly the same data.</li>
+      <li>Accept a correct use, such as several processors checking the same input in a fault-tolerant system.</li>
+    </ul>
+
+    <h3>(d) [1]</h3>
+    <p>A computer with a very large number of processors, hundreds or thousands, working at the same time as one system.</p>
+    <p class="award">“More than one core” does not score. “Many processors working in parallel” does score.</p>
+
+    <h3>(e) [3]</h3>
+    <p>Any three points.</p>
+    <ul class="pts">
+      <li>The data set, or the task, is divided into smaller parts.</li>
+      <li>The processors work on different parts at the same time.</li>
+      <li>The processors are connected by a high-speed interconnection network.</li>
+      <li>They send intermediate results, or messages, to each other.</li>
+      <li>The partial results are combined to give the final result.</li>
+    </ul>
+  </section>
+
+  <section class="ms-part">
+    <h2>Question 3 &nbsp; [15]</h2>
+    <p>P is the output of a 3-input NAND, so P = NOT(A . B . C). Q = B XOR C. R = A OR Q. Z = P AND R.</p>
+    <h3>(a)(i) [4]</h3>
+    <table class="grid">
+      <tr><th>A</th><th>B</th><th>C</th><th>P</th><th>Q</th><th>R</th><th>Z</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+    </table>
+    <p class="award">One mark for each of columns P, Q, R and Z, and only if all eight entries in that column are correct. A wrong P does not by itself lose Q or R.</p>
+    <p class="trap">卡点：111 那一行 P 必须是 0。011 那一行 Q 是 0，因为 XOR 的两个输入都是 1。最后一行 R 仍然是 1，但 Z 被 P 拉成 0。</p>
+
+    <h3>(a)(ii) [2]</h3>
+    <p>Z = NOT A . NOT B . C + NOT A . B . NOT C + A . NOT B . NOT C + A . NOT B . C + A . B . NOT C</p>
+    <p class="award">Terms may be written in any order. Accept bars or apostrophes. Two marks for all five product terms, each containing A, B and C, and no extra term. One mark for three or four of those terms and no incorrect term.</p>
+    <p class="award">Follow-through: if column Z is wrong, mark the sum-of-products from the rows where the candidate’s Z is 1. Two marks means every such row is present as a full product term and no row with Z = 0 has been included.</p>
+    <p class="award">A correct simplified expression, such as NOT B . C + A . NOT B + B . NOT C, scores 1 only. The question says not to simplify.</p>
+
+    <h3>(b) [3]</h3>
+    <ul class="pts">
+      <li>Half adder. [1]</li>
+      <li>One output is the sum of the two input bits. [1]</li>
+      <li>The other output is the carry into the next bit position. [1]</li>
+    </ul>
+    <p class="award">“Sum” and “carry”, in either order, are enough for the two purpose marks if the meaning is clear. The name mark still requires “half adder”.</p>
+
+    <h3>(c) [2]</h3>
+    <p>Any two points.</p>
+    <ul class="pts">
+      <li>A multi-bit addition produces a carry from one column.</li>
+      <li>That carry has to be added into the next column.</li>
+      <li>A half adder has only two inputs, so the carry from the previous column has nowhere to go.</li>
+      <li>The circuit with that extra input is a full adder.</li>
+    </ul>
+
+    <h3>(d) [2]</h3>
+    <ul class="pts">
+      <li>Sum = A &#8853; B &#8853; C<sub>in</sub>. Accept A XOR B XOR C<sub>in</sub>. [1]</li>
+      <li>C<sub>out</sub> = (A . B) + (A . C<sub>in</sub>) + (B . C<sub>in</sub>). [1]</li>
+    </ul>
+    <p class="award">Accept C<sub>out</sub> = (A . B) + (C<sub>in</sub> . (A &#8853; B)). Do not accept Sum = A XOR B. That is the half adder.</p>
+
+    <h3>(e) [2]</h3>
+    <ul class="pts">
+      <li>OR gate. [1]</li>
+      <li>Its inputs are the carry outputs of the two half adders. [1]</li>
+    </ul>
+    <p class="award">“The two carry signals” is enough for the second mark.</p>
+  </section>
+
+  <section class="ms-part">
+    <h2>Question 4 &nbsp; [14]</h2>
+    <h3>(a) [2]</h3>
+    <ul class="pts">
+      <li>Combinational: the output depends only on the current inputs. [1]</li>
+      <li>Sequential: the output depends on the current inputs and on a previous output, or on a stored state. [1]</li>
+    </ul>
+    <p class="award">Accept “combination circuit”, which is the wording used in the Hodder chapter.</p>
+
+    <h3>(b) [3]</h3>
+    <div class="figure">
+      <svg viewBox="0 0 540 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SR flip-flop made from two cross-coupled NOR gates">
+        <path d="M46,54 H140" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M140,40 Q176,76 140,112 Q216,112 244,76 Q216,40 140,40" fill="#fff" stroke="#111" stroke-width="1.6"/>
+        <circle cx="252" cy="76" r="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
+        <path d="M258,76 H325" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M325,76 H450 V258 H70 V198 H140" fill="none" stroke="#111" stroke-width="1.5"/>
+        <text x="16" y="59" font-family="Times New Roman, Times, serif" font-size="16">R</text>
+        <text x="332" y="70" font-family="Times New Roman, Times, serif" font-size="16">Q</text>
+
+        <path d="M46,166 H140" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M140,150 Q176,186 140,222 Q216,222 244,186 Q216,150 140,150" fill="#fff" stroke="#111" stroke-width="1.6"/>
+        <circle cx="252" cy="186" r="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
+        <path d="M258,186 H355" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M355,186 H500 V16 H22 V98 H140" fill="none" stroke="#111" stroke-width="1.5"/>
+        <text x="16" y="171" font-family="Times New Roman, Times, serif" font-size="16">S</text>
+        <text x="292" y="208" font-family="Times New Roman, Times, serif" font-size="16">Q'</text>
+      </svg>
+      <p class="cap">S goes into the NOR gate whose output is Q'. R goes into the NOR gate whose output is Q. Q is fed back into the lower gate, and Q' is fed back into the upper gate.</p>
+    </div>
+    <ul class="pts">
+      <li>Two NOR gates, each with an output bubble or an otherwise clear NOR symbol. [1]</li>
+      <li>Cross-coupling: Q is an input of the other gate, and Q' is an input of the first gate. [1]</li>
+      <li>Labels are placed so that S = 1 sets Q to 1, and R = 1 resets Q to 0. Q' is the second output. [1]</li>
+    </ul>
+    <p class="award">A mirror image scores the third mark if S still sets and R still resets. If S and R are swapped relative to the outputs, the third mark is lost and the other two can stand. A NAND circuit does not score the first mark. It can score the cross-coupling mark.</p>
+    <p class="trap">卡点：S 要接到输出 Q' 的那个 NOR。接到输出 Q 的那个门上，S = 1 会把 Q 清成 0。</p>
+
+    <h3>(c) [4]</h3>
+    <table class="grid">
+        <tr><th>S</th><th>R</th><th>Q</th><th>Q'</th></tr>
+      <tr><td>0</td><td>0</td><td>no change</td><td>no change</td></tr>
+      <tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>1</td><td>invalid</td><td>invalid</td></tr>
+    </table>
+    <p class="award">One mark for each row. For 00 accept hold, memory, latch, or “Q is unchanged”. A fixed 0 or 1 on that row scores 0. For 11 accept invalid, not allowed, race, unpredictable, or Q = 0 and Q' = 0. Writing Q = 1 on that row scores 0.</p>
+
+    <h3>(d) [2]</h3>
+    <p>Any two points.</p>
+    <ul class="pts">
+      <li>Both NOR gates receive a 1, so both outputs are forced to 0.</li>
+      <li>Q' is then not the opposite of Q.</li>
+      <li>When S and R later return to 0, the latch can settle in either state. The next output is not predictable.</li>
+    </ul>
+
+    <h3>(e) [1]</h3>
+    <p>It stores one bit, or it is a one-bit memory. Accept “flip-flops are used to build a register” or “it retains the previous output”.</p>
+    <p class="award">“It is a sequential circuit”, with no idea of storage, does not score.</p>
+
+    <h3>(f) [2]</h3>
+    <ul class="pts">
+      <li>Q changes to the opposite of its current value. It toggles. [1]</li>
+      <li>J = 1 and K = 1 has a defined result, so the invalid combination from the SR flip-flop does not arise. [1]</li>
+    </ul>
+    <p class="award">The toggle mark needs the change of state. “Q = 1” does not score, because the result depends on the current Q.</p>
+  </section>
+
+  <section class="ms-part">
+    <h2>Question 5 &nbsp; [10]</h2>
+    <h3>(a) [2]</h3>
+    <ul class="pts">
+      <li>NOT(A . B) = NOT A + NOT B. [1]</li>
+      <li>NOT(A + B) = NOT A . NOT B. [1]</li>
+    </ul>
+    <p class="award">Any letters are acceptable. The operator must change. A law that keeps AND as AND, or OR as OR, scores 0 for that law.</p>
+
+    <h3>(b) [6]</h3>
+    <p>X = NOT( A . NOT(B + C) ) . ( B + A . NOT B )</p>
+    <ol class="pts">
+      <li>NOT(B + C) = NOT B . NOT C. De Morgan. The expression is now NOT(A . NOT B . NOT C) . (B + A . NOT B).</li>
+      <li>NOT(A . NOT B . NOT C) = NOT A + NOT(NOT B) + NOT(NOT C). De Morgan. The operator inside the bracket changes from AND to OR.</li>
+      <li>NOT(NOT B) = B and NOT(NOT C) = C. Double complement. The left bracket is now NOT A + B + C.</li>
+      <li>B + A . NOT B = (B + A) . (B + NOT B). Distributive law, X + Y.Z = (X + Y)(X + Z).</li>
+      <li>B + NOT B = 1, and Y . 1 = Y. Complement and identity. The right bracket is now A + B.</li>
+      <li>Expand (NOT A + B + C) . (A + B). NOT A . A = 0 and B . B = B, so this is NOT A . B + A . B + B + A . C + B . C.</li>
+      <li>Absorption: B + NOT A . B = B, B + A . B = B and B + B . C = B. Therefore X = A . C + B.</li>
+    </ol>
+    <p>Final answer: <strong>X = A . C + B</strong>. Accept B + A . C, or the same expression with bars.</p>
+    <p class="award">Award any six of the points above, up to 6. The correct final answer is one of those points. A correct final answer with no working scores 1. An incorrect final answer can still score working points that were completed before the error.</p>
+    <p class="award">A shorter expansion is acceptable for the last two points if it reaches A.C + B and the laws are named. Stopping at NOT A + B + C has not used the second bracket and is not the final answer.</p>
+    <p class="trap">卡点：先把 NOT(B + C) 拆开，再拆外面那个 NOT。B + A.NOT B 不是 B。它等于 A + B。最后两项吸收完只剩 A.C + B。</p>
+
+    <h3>(c) [2]</h3>
+    <ul class="pts">
+      <li>Double complement and De Morgan: A.C + B = NOT( NOT(A.C + B) ) = NOT( NOT(A.C) . NOT B ). [1]</li>
+      <li>NOT(A.C) is A NAND C, and NOT B is B NAND B. So X = (A NAND C) NAND (B NAND B). [1]</li>
+    </ul>
+    <p class="award">Accept NAND(NAND(A, C), NAND(B, B)). The correct NAND expression on its own scores the second mark. NAND(NAND(A, C), B) is wrong: that is A.C + NOT B.</p>
+  </section>
+
+  <section class="ms-part">
+    <h2>Question 6 &nbsp; [12]</h2>
+    <h3>(a) [1]</h3>
+    <p>An expression made of AND terms, or product terms, joined by OR.</p>
+    <p class="award">“A Boolean expression” on its own does not score. Accept “minterms joined by OR”.</p>
+
+    <h3>(b) [1]</h3>
+    <p>Any one of:</p>
+    <ul class="pts">
+      <li>Groups of 1s that can be combined are visible, so a simplification is less likely to be missed than in algebra.</li>
+      <li>The minimal sum-of-products can be read from the groups.</li>
+      <li>Cells in a group differ by the variables that are eliminated, so each term is read from the headings that stay the same.</li>
+    </ul>
+    <p class="award">“It is faster” or “it is easier”, with no reason, does not score.</p>
+
+    <h3>(c) [2]</h3>
+    <ul class="pts">
+      <li>The headings are a Gray code. Each heading differs from the next by one bit. [1]</li>
+      <li>Adjacent cells, including the pair of cells that wrap around from the first column to the last column, then differ by only one variable. A group can eliminate the variable that changes. [1]</li>
+    </ul>
+    <p class="award">The order 00, 01, 10, 11 makes the first and last columns differ by two bits, so those cells are not a legal pair.</p>
+
+    <h3>(d) [2]</h3>
+    <table class="map">
+      <tr><th class="corner">CD \ AB</th><th>00</th><th>01</th><th>11</th><th>10</th></tr>
+      <tr><th>00</th><td class="pair">1</td><td>0</td><td>0</td><td class="pair">1</td></tr>
+      <tr><th>01</th><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><th>11</th><td>0</td><td class="bc">1</td><td class="both">1</td><td class="ac">1</td></tr>
+      <tr><th>10</th><td>0</td><td class="bc">1</td><td class="both">1</td><td class="ac">1</td></tr>
+    </table>
+    <p class="legend"><span class="swatch pair"></span>wrap pair &nbsp; <span class="swatch bc"></span>B.C &nbsp; <span class="swatch ac"></span>A.C &nbsp; <span class="swatch both"></span>in both quads</p>
+    <p class="award">Two marks if all 16 cells are correct. One mark if exactly one cell is wrong. Zero if two or more cells are wrong. The colours are for the loops in part (e). A cell with no 0 and no 1 is wrong.</p>
+    <p class="trap">卡点：ABCD = 1000 在表里是第 9 行，放进图里是第一行、最后一列，不是第三列。二进制顺序和 Gray code 不是同一列。</p>
+
+    <h3>(e) [3]</h3>
+    <p>One mark for each loop:</p>
+    <ul class="pts">
+      <li>The quad in columns AB = 11 and AB = 10, rows CD = 11 and CD = 10. This is A.C.</li>
+      <li>The quad in columns AB = 01 and AB = 11, rows CD = 11 and CD = 10. This is B.C.</li>
+      <li>The pair in row CD = 00, columns AB = 00 and AB = 10. This pair wraps around the ends of the row. It is NOT B . NOT C . NOT D.</li>
+    </ul>
+    <p class="award">An incorrect extra loop loses one mark. The minimum for this part is 0. A loop around all six 1s in the bottom-right of the map is incorrect: a group of six is not allowed, and columns 01 and 10 are not adjacent. Two separate single-cell loops in place of the wrapping pair score 0 for that loop.</p>
+
+    <h3>(f) [2]</h3>
+    <p>X = A.C + B.C + NOT B . NOT C . NOT D</p>
+    <ul class="pts">
+      <li>A.C + B.C, with no third term taken from those two quads. [1]</li>
+      <li>The wrap term NOT B . NOT C . NOT D is present, and the whole expression has no extra term. [1]</li>
+    </ul>
+    <p class="award">Terms may be written in any order. Follow-through from a wrong but legal set of loops: award the expression that those loops actually produce, using the same two-mark split.</p>
+
+    <h3>(g) [1]</h3>
+    <p>X = C . (A + B) + NOT B . NOT C . NOT D</p>
+    <p class="award">Accept (A + B) . C for the first part. Also accept C . (A + B) + NOT(B + C + D), because NOT B . NOT C . NOT D = NOT(B + C + D). The unfactorised answer from part (f) does not score again. Dropping the third term scores 0.</p>
+    <p class="trap">卡点：A.C + B.C 要提出 C。绕边那一项不能丢掉，它和这两个四格圈没有重叠。</p>
+  </section>
+
+  <p class="footer-note">The circuit table, the adder identities, the algebra and the K-map were checked by evaluating every input combination in <span class="mono">verify_logic.py</span>.</p>
+</article>
+</body>
+</html>

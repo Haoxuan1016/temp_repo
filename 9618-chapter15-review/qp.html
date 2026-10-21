@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>9618 Chapter 15 Review Paper</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<article class="sheet">
+  <p class="kicker">Cambridge International AS &amp; A Level · Computer Science 9618</p>
+  <h1>Chapter 15 Review Paper</h1>
+  <p class="sub">Hardware, Boolean algebra and logic circuits</p>
+  <p class="zh" style="margin-top:0.6rem">练习卷，不是 Cambridge 原卷。90 分钟，75 分。做的时候不要打开 <a href="ms.html">ms.html</a>。范围说明在 <a href="syllabus.html">syllabus.html</a>。</p>
+
+  <table class="meta">
+    <tr><td>Time</td><td>1 hour 30 minutes</td></tr>
+    <tr><td>Total marks</td><td>75</td></tr>
+    <tr><td>Syllabus</td><td>15.1 Processors and parallel processing<br>15.2 Boolean algebra and logic circuits</td></tr>
+    <tr><td>Materials</td><td>None. Write on this paper.</td></tr>
+  </table>
+
+  <h2>Instructions</h2>
+  <ol class="instr">
+    <li>Answer <strong>all</strong> questions.</li>
+    <li>Show the law used at each stage when a question asks for working.</li>
+    <li>A bar, an apostrophe, or the word NOT all mean NOT. A dot means AND. + means OR. &#8853; means XOR.</li>
+    <li>The number of marks is given in brackets [ ].</li>
+  </ol>
+
+  <table class="tick" style="margin-top:0.8rem">
+    <tr><th>Question</th><th>Marks</th></tr>
+    <tr><td style="text-align:left">1 &nbsp; RISC, CISC, pipelining and interrupts</td><td>12</td></tr>
+    <tr><td style="text-align:left">2 &nbsp; Parallel architectures</td><td>12</td></tr>
+    <tr><td style="text-align:left">3 &nbsp; Logic circuits and adders</td><td>15</td></tr>
+    <tr><td style="text-align:left">4 &nbsp; Flip-flops</td><td>14</td></tr>
+    <tr><td style="text-align:left">5 &nbsp; De Morgan’s laws and Boolean algebra</td><td>10</td></tr>
+    <tr><td style="text-align:left">6 &nbsp; Karnaugh maps</td><td>12</td></tr>
+    <tr><td style="text-align:left"><strong>Total</strong></td><td><strong>75</strong></td></tr>
+  </table>
+
+  <section class="q">
+    <div class="qhead"><h2>1 &nbsp; Processors</h2><span class="marks">[12]</span></div>
+
+    <div class="part">
+      <p><strong>(a)</strong> Tick (<span class="box"></span>) one box in each row to show whether the statement describes a RISC processor or a CISC processor. <span class="mk">[3]</span></p>
+      <p class="small">One mark is given for every two correct rows.</p>
+      <table class="tick">
+        <tr><th>Statement</th><th>RISC</th><th>CISC</th></tr>
+        <tr><td>An instruction is normally executed in one clock cycle.</td><td><span class="box"></span></td><td><span class="box"></span></td></tr>
+        <tr><td>The control unit is microprogrammed.</td><td><span class="box"></span></td><td><span class="box"></span></td></tr>
+        <tr><td>The processor has a large number of general-purpose registers.</td><td><span class="box"></span></td><td><span class="box"></span></td></tr>
+        <tr><td>Instructions can have different lengths.</td><td><span class="box"></span></td><td><span class="box"></span></td></tr>
+        <tr><td>Memory is accessed only by load and store instructions.</td><td><span class="box"></span></td><td><span class="box"></span></td></tr>
+        <tr><td>The instruction set provides many addressing modes.</td><td><span class="box"></span></td><td><span class="box"></span></td></tr>
+      </table>
+    </div>
+
+    <div class="part">
+      <p><strong>(b)</strong> Describe how pipelining is used during the fetch-execute cycle in a RISC processor. <span class="mk">[3]</span></p>
+      <div class="lines"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(c)</strong> Explain how interrupt handling on a pipelined RISC processor differs from interrupt handling on a CISC processor that does not use pipelining. <span class="mk">[4]</span></p>
+      <div class="lines"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(d)</strong> Explain why a RISC processor uses a large number of general-purpose registers. <span class="mk">[2]</span></p>
+      <div class="lines"><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="qhead"><h2>2 &nbsp; Parallel processing</h2><span class="marks">[12]</span></div>
+
+    <div class="part">
+      <p><strong>(a)</strong> Complete the table with the full name of each computer architecture. <span class="mk">[2]</span></p>
+      <p class="small">One mark is given for every two correct rows.</p>
+      <table class="tick">
+        <tr><th>Abbreviation</th><th>Full name</th></tr>
+        <tr><td>SISD</td><td style="height:1.8rem"></td></tr>
+        <tr><td>SIMD</td><td></td></tr>
+        <tr><td>MISD</td><td></td></tr>
+        <tr><td>MIMD</td><td></td></tr>
+      </table>
+    </div>
+
+    <div class="part">
+      <p><strong>(b)</strong> Three computer systems are described below. Identify the architecture used by each system. Use one of SISD, SIMD, MISD or MIMD. <span class="mk">[3]</span></p>
+      <p>System 1 has one processor. The processor carries out one instruction, on one data value, and then starts the next instruction.</p>
+      <p>Architecture ........................................................................................................</p>
+      <p style="margin-top:0.45rem">System 2 has 64 arithmetic units. In one clock cycle every unit carries out the same add instruction. Each unit receives a different pair of numbers.</p>
+      <p>Architecture ........................................................................................................</p>
+      <p style="margin-top:0.45rem">System 3 has four processors and one shared memory. At one moment, processor 1 is executing a divide, processor 2 is executing a branch, and processors 3 and 4 are each executing a different instruction on their own data.</p>
+      <p>Architecture ........................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p><strong>(c)</strong> Describe the MISD architecture. State why it is rarely used in a general-purpose computer. <span class="mk">[3]</span></p>
+      <div class="lines"><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(d)</strong> State what is meant by a massively parallel computer. <span class="mk">[1]</span></p>
+      <div class="lines"><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(e)</strong> A laboratory uses a massively parallel computer to process one very large set of experimental results. Explain how the processors work together on that single task. <span class="mk">[3]</span></p>
+      <div class="lines"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="qhead"><h2>3 &nbsp; Logic circuits and adders</h2><span class="marks">[15]</span></div>
+
+    <div class="part">
+      <p>The diagram shows a logic circuit. P, Q and R are intermediate outputs. Z is the output of the circuit. A dot on a wire is a junction. Crossing wires do not join.</p>
+      <div class="figure">
+        <svg viewBox="0 0 980 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logic circuit with a 3-input NAND, an XOR, an OR and an AND">
+          <path class="w" d="M34,46 H170" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M64,46 V10 H470 V52 H500" fill="none" stroke="#111" stroke-width="1.5"/>
+          <circle cx="64" cy="46" r="3.2" fill="#111"/>
+          <path d="M34,130 H96 V78 H170" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M96,130 H170" fill="none" stroke="#111" stroke-width="1.5"/>
+          <circle cx="96" cy="130" r="3.2" fill="#111"/>
+          <path d="M34,214 H128 V110 H170" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M128,214 H170" fill="none" stroke="#111" stroke-width="1.5"/>
+          <circle cx="128" cy="214" r="3.2" fill="#111"/>
+          <path d="M170,36 H214 A42,42 0 0 1 214,120 H170 Z" fill="#fff" stroke="#111" stroke-width="1.7"/>
+          <circle cx="262" cy="78" r="6.5" fill="#fff" stroke="#111" stroke-width="1.7"/>
+          <path d="M268.5,78 H318" fill="none" stroke="#111" stroke-width="1.5"/>
+          <text x="286" y="70" font-family="Times New Roman, Times, serif" font-size="16" font-style="italic">P</text>
+          <path d="M318,78 V28 H790 V56 H830" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M170,140 Q204,172 170,204" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M184,140 Q218,172 184,204 Q258,204 286,172 Q258,140 184,140" fill="#fff" stroke="#111" stroke-width="1.7"/>
+          <path d="M286,172 H340" fill="none" stroke="#111" stroke-width="1.5"/>
+          <text x="312" y="164" font-family="Times New Roman, Times, serif" font-size="16" font-style="italic">Q</text>
+          <circle cx="340" cy="172" r="3.2" fill="#111"/>
+          <path d="M340,172 V104 H500" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M500,42 Q534,78 500,114 Q575,114 608,78 Q575,42 500,42" fill="#fff" stroke="#111" stroke-width="1.7"/>
+          <path d="M608,78 H700" fill="none" stroke="#111" stroke-width="1.5"/>
+          <text x="640" y="70" font-family="Times New Roman, Times, serif" font-size="16" font-style="italic">R</text>
+          <path d="M700,78 V100 H830" fill="none" stroke="#111" stroke-width="1.5"/>
+          <path d="M830,46 H866 A32,32 0 0 1 866,110 H830 Z" fill="#fff" stroke="#111" stroke-width="1.7"/>
+          <path d="M898,78 H940" fill="none" stroke="#111" stroke-width="1.5"/>
+          <text x="948" y="83" font-family="Times New Roman, Times, serif" font-size="16">Z</text>
+          <text x="12" y="51" font-family="Times New Roman, Times, serif" font-size="16">A</text>
+          <text x="12" y="135" font-family="Times New Roman, Times, serif" font-size="16">B</text>
+          <text x="12" y="219" font-family="Times New Roman, Times, serif" font-size="16">C</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="part">
+      <p><strong>(a) (i)</strong> Complete the truth table for this logic circuit. Show your working in columns P, Q and R. <span class="mk">[4]</span></p>
+      <table class="grid">
+        <tr><th colspan="3">Inputs</th><th colspan="3">Working space</th><th>Output</th></tr>
+        <tr><th>A</th><th>B</th><th>C</th><th>P</th><th>Q</th><th>R</th><th>Z</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+      </table>
+    </div>
+
+    <div class="part">
+      <p><strong>(a) (ii)</strong> Write the Boolean expression for Z as a sum-of-products. Do not simplify the expression. <span class="mk">[2]</span></p>
+      <p>Z = .................................................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p>A different circuit adds two one-bit binary numbers and has two outputs.</p>
+      <p><strong>(b)</strong> State the name of this circuit, and state the purpose of each output. <span class="mk">[3]</span></p>
+      <p>Name .....................................................................................................................</p>
+      <p>First output ............................................................................................................</p>
+      <p>Second output .......................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p><strong>(c)</strong> Explain why that circuit cannot, on its own, add two multi-bit binary numbers. Name the circuit that removes the problem. <span class="mk">[2]</span></p>
+      <div class="lines"><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(d)</strong> A full adder has inputs A, B and C<sub>in</sub>. Write the Boolean expression for the sum output and for the carry-out output. <span class="mk">[2]</span></p>
+      <p>Sum = ....................................................................................................................</p>
+      <p>C<sub>out</sub> = ...................................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p><strong>(e)</strong> A full adder can be made from two half adders and one other gate. Name that gate, and state what its two inputs are. <span class="mk">[2]</span></p>
+      <p>Gate .......................................................................................................................</p>
+      <p>Inputs ....................................................................................................................</p>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="qhead"><h2>4 &nbsp; Flip-flops</h2><span class="marks">[14]</span></div>
+
+    <div class="part">
+      <p><strong>(a)</strong> Define a combinational circuit and a sequential circuit. <span class="mk">[2]</span></p>
+      <p>Combinational .......................................................................................................</p>
+      <div class="lines"><i></i></div>
+      <p>Sequential .............................................................................................................</p>
+      <div class="lines"><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(b)</strong> Draw a logic circuit for an SR flip-flop made from two NOR gates. Label the inputs S and R, and the outputs Q and Q'. Q' means NOT Q. Show the cross-coupling. <span class="mk">[3]</span></p>
+      <div class="lines" style="border:1px solid #ccc; min-height:9.5rem; padding:0.4rem">
+        <i style="border:0"></i><i style="border:0"></i><i style="border:0"></i><i style="border:0"></i><i style="border:0"></i>
+      </div>
+    </div>
+
+    <div class="part">
+      <p><strong>(c)</strong> Complete the table for the NOR SR flip-flop you drew in part (b). <span class="mk">[4]</span></p>
+      <table class="grid">
+        <tr><th>S</th><th>R</th><th>Q</th><th>Q'</th></tr>
+        <tr><td>0</td><td>0</td><td style="min-width:7rem"></td><td style="min-width:7rem"></td></tr>
+        <tr><td>0</td><td>1</td><td></td><td></td></tr>
+        <tr><td>1</td><td>0</td><td></td><td></td></tr>
+        <tr><td>1</td><td>1</td><td></td><td></td></tr>
+      </table>
+    </div>
+
+    <div class="part">
+      <p><strong>(d)</strong> Explain why the input combination S = 1, R = 1 is not used. <span class="mk">[2]</span></p>
+      <div class="lines"><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(e)</strong> State the purpose of a flip-flop in a processor. <span class="mk">[1]</span></p>
+      <div class="lines"><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(f)</strong> A JK flip-flop is clocked. State the effect on Q when J = 1 and K = 1, and state why this input combination does not cause the problem identified in part (d). <span class="mk">[2]</span></p>
+      <div class="lines"><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="qhead"><h2>5 &nbsp; Boolean algebra</h2><span class="marks">[10]</span></div>
+
+    <div class="part">
+      <p><strong>(a)</strong> State De Morgan’s two laws. <span class="mk">[2]</span></p>
+      <p>Law 1 ....................................................................................................................</p>
+      <p>Law 2 ....................................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p><strong>(b)</strong> Simplify the following expression using De Morgan’s laws and Boolean algebra. Show every stage and name the law used at each stage. <span class="mk">[6]</span></p>
+      <p class="sym" style="margin:0.5rem 0">X = NOT( A . NOT(B + C) ) . ( B + A . NOT B )</p>
+      <div class="lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p>X = .........................................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p><strong>(c)</strong> Rewrite your answer to part (b) so that the expression can be built from NAND gates only. Both inputs of a NAND gate may be connected to the same signal. Show your working. <span class="mk">[2]</span></p>
+      <div class="lines"><i></i><i></i><i></i></div>
+      <p>X = .........................................................................................................................</p>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="qhead"><h2>6 &nbsp; Karnaugh maps</h2><span class="marks">[12]</span></div>
+
+    <div class="part">
+      <p><strong>(a)</strong> State what is meant by a sum-of-products expression. <span class="mk">[1]</span></p>
+      <div class="lines"><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(b)</strong> Describe one benefit of using a Karnaugh map to simplify a Boolean expression. <span class="mk">[1]</span></p>
+      <div class="lines"><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p><strong>(c)</strong> The column headings of a Karnaugh map are written 00, 01, 11, 10 and not 00, 01, 10, 11. Explain why. <span class="mk">[2]</span></p>
+      <div class="lines"><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="part">
+      <p>A Boolean function X has the truth table below.</p>
+      <table class="grid">
+        <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>X</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+      </table>
+    </div>
+
+    <div class="part">
+      <p><strong>(d)</strong> Complete the Karnaugh map for X. <span class="mk">[2]</span></p>
+      <table class="map">
+        <tr><th class="corner">CD \ AB</th><th>00</th><th>01</th><th>11</th><th>10</th></tr>
+        <tr><th>00</th><td></td><td></td><td></td><td></td></tr>
+        <tr><th>01</th><td></td><td></td><td></td><td></td></tr>
+        <tr><th>11</th><td></td><td></td><td></td><td></td></tr>
+        <tr><th>10</th><td></td><td></td><td></td><td></td></tr>
+      </table>
+    </div>
+
+    <div class="part">
+      <p><strong>(e)</strong> Draw loops around the groups of 1s that produce an optimal sum-of-products. Draw the loops on the map in part (d). <span class="mk">[3]</span></p>
+    </div>
+
+    <div class="part">
+      <p><strong>(f)</strong> Write the simplified sum-of-products for X from your loops. Do not factorise it yet. <span class="mk">[2]</span></p>
+      <p>X = .........................................................................................................................</p>
+    </div>
+
+    <div class="part">
+      <p><strong>(g)</strong> Use Boolean algebra to write your answer to part (f) in its simplest form. <span class="mk">[1]</span></p>
+      <p>X = .........................................................................................................................</p>
+    </div>
+  </section>
+
+  <p class="footer-note">End of paper. Total: 75 marks.</p>
+</article>
+</body>
+</html>
