@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>9618 Chapter 15 syllabus map</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<article class="sheet zh">
+  <p class="kicker">Cambridge International AS &amp; A Level Computer Science 9618</p>
+  <h1>Hodder Chapter 15 → syllabus</h1>
+  <p class="sub">Hardware：处理器、并行，以及 Boolean algebra 和 logic circuits</p>
+
+  <div class="note">
+    <p>卷子在 <a href="qp.html">qp.html</a>，评分标准在 <a href="ms.html">ms.html</a>。75 分，90 分钟，和 Paper 3 一样。做题时不要打开评分标准。</p>
+    <p>题是按下面这些真题的考法写的新题，不是把 Cambridge 原卷贴上来。每题的场景、电路和式子都是新的，所以这套做对了，不等于那道原题会做。评分标准里标了对应的 paper 和 question，对完可以再做一遍原题。</p>
+  </div>
+
+  <h2>这一章在书里和在 syllabus 里各是什么</h2>
+  <p>Hodder 的 Chapter 15 标题是 Hardware，两节：</p>
+  <ul class="pts">
+    <li>15.1 Processors and parallel processing</li>
+    <li>15.2 Boolean algebra and logic circuits。logic gates 在这里，不是单独一章。</li>
+  </ul>
+  <p>AS 的六种门，NOT、AND、OR、NAND、NOR、XOR，在第 3 章。Chapter 15 默认你会画、会填表，卷子里直接用。</p>
+  <p>现在考试用的 syllabus 把同一块写成 15.1 Processors, Parallel Processing and Virtual Machines，以及 15.2 Boolean Algebra and Logic Circuits。和这本书对得上，只有一处不一样：现行 15.1 把 virtual machine 写进来了，Hodder 这一版的 VM 在 Chapter 16.2。这套卷不考 VM。</p>
+
+  <h2>Syllabus 要求，以及卷子落在哪一题</h2>
+  <table class="meta">
+    <tr><td>要会什么</td><td>题</td></tr>
+    <tr><td>RISC 和 CISC 的差别，包括指令长度、周期、寄存器、寻址方式、控制单元、load/store</td><td>1(a)</td></tr>
+    <tr><td>RISC 里流水线怎么工作，寄存器在里面起什么作用</td><td>1(b)(d)</td></tr>
+    <tr><td>中断在 RISC 和 CISC 上怎么处理，流水线会把这件事变成什么样</td><td>1(c)</td></tr>
+    <tr><td>SISD、SIMD、MISD、MIMD 的全称和含义</td><td>2(a)(b)(c)</td></tr>
+    <tr><td>massively parallel computer 是什么，多处理器怎么分担同一批数据</td><td>2(d)(e)</td></tr>
+    <tr><td>给一个多输入门的电路填真值表，中间列要写出来</td><td>3(a)(i)</td></tr>
+    <tr><td>由真值表写出没有化简的 sum-of-products</td><td>3(a)(ii)</td></tr>
+    <tr><td>half adder 的名字，以及两个输出各自是什么</td><td>3(b)</td></tr>
+    <tr><td>为什么 half adder 加不了多位，full adder 多出来的输入是什么</td><td>3(c)</td></tr>
+    <tr><td>full adder 的 Sum 和 Carry-out 表达式</td><td>3(d)</td></tr>
+    <tr><td>两个 half adder 拼成 full adder 时还要一个什么门</td><td>3(e)</td></tr>
+    <tr><td>combinational circuit 和 sequential circuit</td><td>4(a)</td></tr>
+    <tr><td>用 NOR 画出 SR flip-flop，标出 S、R、Q、Q'（Q' 就是 NOT Q）</td><td>4(b)</td></tr>
+    <tr><td>SR 的四种输入，包括保持和非法态</td><td>4(c)(d)</td></tr>
+    <tr><td>flip-flop 用来存什么</td><td>4(e)</td></tr>
+    <tr><td>JK 在 J = 1、K = 1 时做什么，为什么这样就没有 SR 的非法态</td><td>4(f)</td></tr>
+    <tr><td>两条 De Morgan 定律，原文写出来</td><td>5(a)</td></tr>
+    <tr><td>用 De Morgan 和其他 Boolean 定律逐步化简，每一步写定律名</td><td>5(b)</td></tr>
+    <tr><td>把化简结果改成只用 NAND</td><td>5(c)</td></tr>
+    <tr><td>sum-of-products 是什么</td><td>6(a)</td></tr>
+    <tr><td>Karnaugh map 相比纯代数化简有什么好处</td><td>6(b)</td></tr>
+    <tr><td>为什么表头是 00、01、11、10，而不是二进制顺序</td><td>6(c)</td></tr>
+    <tr><td>填 K-map、画最优圈、写化简后的 sum-of-products，再提取公因子</td><td>6(d) 到 (g)</td></tr>
+  </table>
+
+  <h2>定义题放在哪里</h2>
+  <p>真题里单独给分的定义，这套都留了位置，没有把它们塞进一道大题里就算考过。</p>
+  <ul class="pts">
+    <li>四种结构的全称：2(a)。MISD 另外要求说出含义，以及为什么普通计算机很少用，2(c)。</li>
+    <li>massively parallel computer：2(d)，后面 2(e) 才是解释。</li>
+    <li>half adder 叫什么，两个输出各干什么：3(b)。对应 9618/32/M/J/22 Question 6(b)。</li>
+    <li>flip-flop 的作用：4(e)，1 分。对应 9618/32/O/N/22 Question 8(b)。</li>
+    <li>两条 De Morgan 定律本身：5(a)，先写定律，再化简。</li>
+    <li>sum-of-products：6(a)。K-map 的一个好处：6(b)。Gray code 的表头：6(c)。</li>
+  </ul>
+  <p>书上的 key term 里，positive feedback 和 cross-coupling 没有单独设题。Cambridge 不单独问这两个词。cross-coupling 就是 4(b) 里那两根反馈线，评分标准认这个画法。</p>
+
+  <h2>为什么是这几道，而不是把同类型的真题都放进来</h2>
+  <table class="meta">
+    <tr><td>保留的考法</td><td>没有再出的</td></tr>
+    <tr>
+      <td>RISC/CISC 用六句判断题，对应 9618/31/O/N/22 Q10(a)。容易勾反的是“寄存器多”“微程序控制单元”“只有 load/store 访问内存”。流水线本身用 1(b) 写过程。中断不单独再出一套，而是和流水线放在 1(c)，这是 9618/31/M/J/24 Q11(b)(c) 那道难的。</td>
+      <td>不再出“说出 RISC 的两个特点”。那道和判断题是同一分知识，而且更直。</td>
+    </tr>
+    <tr>
+      <td>Flynn 的定义来自 9618/32/M/J/22 Q5。卷子里 SISD、SIMD、MIMD 给场景去认，MISD 改成定义。大规模并行是这道真题没考到的定义，单独放在 2(d)(e)。</td>
+      <td>不再把四种结构各用一段话描述一遍。认场景和写全称已经覆盖了，再描述就是同一句话写两遍。</td>
+    </tr>
+    <tr>
+      <td>电路真值表是非加法器，带三输入 NAND 和 XOR，中间列 P、Q、R 都要填。half adder 只考名字和两个输出的作用。full adder 考为什么多一位就不够、两条表达式，以及两个 half adder 中间那个 OR。完整加法器填表的真题是 9618/31/M/J/21 Q7。</td>
+      <td>不再填 half adder 的 4 行表，也不再填 full adder 的 8 行表。3(a) 已经是一张真值表。</td>
+    </tr>
+    <tr>
+      <td>SR 要求用 NOR 画出来并填完整张表，含 00 的保持和 11 的非法态。JK 只问 J = K = 1。化简放在第 5 题，不跟在触发器后面再化简一次。9618/32/O/N/22 Q8 就是“画 SR、说作用、再化简”连在一起的，这里拆开，化简用了另一条式子。</td>
+      <td>不再画 JK 的门电路，也不再给 JK 填一张和 SR 差不多的表。</td>
+    </tr>
+    <tr>
+      <td>K-map 用 4 个变量。最优圈必须用到第一行左右两格绕边的那一对。右下角六个 1 连在一起，但不能圈成一个圈。化简后再提取公因子，这是 9618/31/M/J/23 Q7 最后一步。问法同样见于 9618/31/O/N/22 Q7。</td>
+      <td>不把 3(a) 那个电路再拿去做 K-map。真题里有时一张电路后面接着做图，那样 4 变量的绕边就放不进去。两个技能分开，数据也分开。</td>
+    </tr>
+  </table>
+
+  <h2>做的时候最容易丢分的地方</h2>
+  <ul class="pts">
+    <li>1(a) 寄存器多的是 RISC，微程序控制单元是 CISC。</li>
+    <li>1(c) 要同时写到两件事：CISC 一条指令可能要很多个周期，中断得等它做完；RISC 流水线里已经有好几条指令，除了写回那条，其余通常清掉。</li>
+    <li>2(b) 四个处理器在同一时刻执行不同指令、处理不同数据，是 MIMD，不是 SIMD。</li>
+    <li>3(a) 三输入 NAND 只有 A、B、C 全是 1 时输出才是 0。B XOR C 在两个输入都是 1 时是 0。</li>
+    <li>3(a)(ii) 要五个乘积项，每一项三个字母都要在。先化简会少一分。</li>
+    <li>4(c) S = 0、R = 0 不能写成 Q = 0 或 Q = 1，要写保持。S = 1、R = 1 是非法，不是置 1。</li>
+    <li>5(b) 最后是 A.C + B。停在 NOT A + B + C 还没乘上后一个括号。</li>
+    <li>6(e) 表头 00、01、11、10 的第一格和最后一格是相邻的。六个 1 不是合法圈。</li>
+  </ul>
+
+  <p class="footer-note">Virtual machine、guest operating system、hypervisor 不在 Chapter 15。如果学校是按现行 syllabus 的 15.1 整节在考，而不是按这本书的章，那一部分要另做。</p>
+</article>
+</body>
+</html>
