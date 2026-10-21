@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>9618 Chapter 15 Review Sheet</title>
+<style>
+  @page {
+    size: A4;
+    margin: 8mm 9mm 11mm;
+    @bottom-left {
+      content: "9618  ·  Chapter 15 review sheet";
+      font-family: "Liberation Sans", Arial, sans-serif;
+      font-size: 8pt;
+      color: #333;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: "Liberation Sans", Arial, sans-serif;
+      font-size: 8pt;
+      color: #333;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Liberation Sans", Arial, sans-serif;
+    font-size: 8.7pt;
+    line-height: 1.24;
+    color: #161616;
+  }
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1.6pt solid #111;
+    padding-bottom: 2px;
+    margin-bottom: 5px;
+  }
+  h1 {
+    font-size: 13.5pt;
+    line-height: 1.1;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .meta { font-size: 8pt; text-align: right; line-height: 1.25; }
+  h2 {
+    font-size: 10pt;
+    margin: 4px 0 2px;
+    padding-bottom: 1px;
+    border-bottom: 0.9pt solid #222;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  h3 {
+    font-size: 8.9pt;
+    margin: 0 0 2px;
+    font-weight: 700;
+  }
+  p { margin: 0 0 3px; }
+  ul { margin: 0 0 3px; padding-left: 1.15em; }
+  li { margin: 0 0 1px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 4px;
+  }
+  th, td {
+    border: 0.6pt solid #222;
+    padding: 1px 4px;
+    vertical-align: top;
+    text-align: left;
+  }
+  th { background: #f3f3f3; font-weight: 700; }
+  td.c, th.c { text-align: center; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 2px; }
+  .cols-3 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 8px; }
+  .b {
+    display: inline-block;
+    border-top: 0.75px solid #111;
+    line-height: 0.92;
+    padding: 0 0.4px;
+  }
+  .tight td, .tight th { padding: 1px 3px; }
+  .sym td { text-align: center; vertical-align: middle; padding: 2px 2px 1px; }
+  .sym svg { width: 58px; height: 30px; display: block; margin: 0 auto; }
+  .expr { font-size: 8pt; }
+  .page2 { break-before: page; }
+  .fig { margin: 0; }
+  .cap { font-size: 7.6pt; margin: 1px 0 0; }
+  svg text { font-family: "Liberation Sans", Arial, sans-serif; fill: #161616; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Chapter 15 Review Sheet</h1>
+  <div class="meta">Cambridge 9618 &nbsp;·&nbsp; 15.1 and 15.2<br>Processors and logic circuits</div>
+</header>
+
+<h2>15.1 &nbsp; Processors and parallel architectures</h2>
+
+<table class="tight">
+  <colgroup>
+    <col style="width:28%">
+    <col style="width:36%">
+    <col style="width:36%">
+  </colgroup>
+  <thead>
+    <tr><th>Feature asked in the tick table</th><th>RISC</th><th>CISC</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Instruction length</td><td>Fixed</td><td>Variable</td></tr>
+    <tr><td>Time for one instruction</td><td>One clock cycle</td><td>Several clock cycles</td></tr>
+    <tr><td>General-purpose registers</td><td>Many</td><td>Fewer</td></tr>
+    <tr><td>How an instruction uses memory</td><td>Load and store instructions only</td><td>Many addressing modes; an instruction can access memory itself</td></tr>
+    <tr><td>Control unit</td><td>Hardwired</td><td>Microprogrammed</td></tr>
+    <tr><td>Pipelining</td><td>Used. Fixed length makes the stages line up</td><td>Harder, because instructions differ in length and in time</td></tr>
+  </tbody>
+</table>
+<p>Many registers: the operands come from registers, so the instruction does not have to wait for memory and can finish in one cycle.</p>
+
+<div class="cols">
+  <div>
+    <h3>Pipelining</h3>
+    <ul>
+      <li>The instruction is split into stages. Name two of: fetch, decode, execute, write-back.</li>
+      <li>Several instructions occupy different stages at the same time.</li>
+      <li>Each stage takes one clock cycle.</li>
+      <li>Once every stage is busy, one instruction finishes on each clock cycle. Throughput rises. A single instruction does not get shorter.</li>
+    </ul>
+  </div>
+  <div>
+    <h3>When an interrupt arrives</h3>
+    <ul>
+      <li>It is checked at the end of the current instruction. On RISC that is one cycle, so it is taken quickly. On CISC the instruction may still have many cycles left, so the interrupt waits.</li>
+      <li>Later instructions are already in the pipeline. Flush those stages, or save the contents of each stage. The instruction in write-back can finish.</li>
+      <li>Save the program counter and the registers, run the interrupt service routine, restore them, then fill the pipeline again.</li>
+      <li>Frequent interrupts keep emptying the pipeline, so the throughput gain is lost.</li>
+    </ul>
+  </div>
+</div>
+
+<table class="tight">
+  <thead>
+    <tr><th style="width:14%"></th><th>Instruction streams</th><th>Data</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>SISD</td><td>One processor runs one stream</td><td>One data stream</td></tr>
+    <tr><td>SIMD</td><td>Many processors run the same instruction</td><td>Each has its own data stream</td></tr>
+    <tr><td>MISD</td><td>Many processors run different instructions</td><td>All use the same data stream</td></tr>
+    <tr><td>MIMD</td><td>Many processors run different instructions</td><td>Each has its own data stream</td></tr>
+  </tbody>
+</table>
+<p>The mark is for what the processors do. In a comparison, name both architectures: SIMD and MISD are both parallel and both use more than one processor; SIMD applies one instruction to many data items, while MISD applies different instructions to one data item. Expanding the initials on their own scores nothing.</p>
+<p><b>Massively parallel.</b> A very large number of processors are linked and act as one machine (“many” or “thousands”; “several” does not score). They work at the same time on one problem, each on its own part. They exchange data through an interconnection network, or through shared memory.</p>
+
+<h2>15.2 &nbsp; Gates used in every circuit question</h2>
+<table class="sym tight">
+  <tr>
+    <th>NOT</th><th>AND</th><th>OR</th><th>NAND</th><th>NOR</th><th>XOR</th>
+  </tr>
+  <tr>
+    <td>
+      <svg viewBox="0 0 78 40" aria-label="NOT gate">
+        <line x1="2" y1="20" x2="10" y2="20" stroke="#111" stroke-width="1.5"/>
+        <polygon points="10,5 10,35 40,20" fill="none" stroke="#111" stroke-width="1.5"/>
+        <circle cx="44.5" cy="20" r="4.2" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="49" y1="20" x2="74" y2="20" stroke="#111" stroke-width="1.5"/>
+      </svg>
+    </td>
+    <td>
+      <svg viewBox="0 0 78 40" aria-label="AND gate">
+        <line x1="2" y1="13" x2="12" y2="13" stroke="#111" stroke-width="1.5"/>
+        <line x1="2" y1="27" x2="12" y2="27" stroke="#111" stroke-width="1.5"/>
+        <path d="M12 5 H32 A15 15 0 0 1 32 35 H12 Z" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="47" y1="20" x2="74" y2="20" stroke="#111" stroke-width="1.5"/>
+      </svg>
+    </td>
+    <td>
+      <svg viewBox="0 0 78 40" aria-label="OR gate">
+        <line x1="2" y1="13" x2="16" y2="13" stroke="#111" stroke-width="1.5"/>
+        <line x1="2" y1="27" x2="16" y2="27" stroke="#111" stroke-width="1.5"/>
+        <path d="M14 5 C28 5 36 12 52 20 C36 28 28 35 14 35 C24 27 24 13 14 5 Z" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="52" y1="20" x2="74" y2="20" stroke="#111" stroke-width="1.5"/>
+      </svg>
+    </td>
+    <td>
+      <svg viewBox="0 0 78 40" aria-label="NAND gate">
+        <line x1="2" y1="13" x2="10" y2="13" stroke="#111" stroke-width="1.5"/>
+        <line x1="2" y1="27" x2="10" y2="27" stroke="#111" stroke-width="1.5"/>
+        <path d="M10 5 H28 A15 15 0 0 1 28 35 H10 Z" fill="none" stroke="#111" stroke-width="1.5"/>
+        <circle cx="47.2" cy="20" r="4.2" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="51.5" y1="20" x2="74" y2="20" stroke="#111" stroke-width="1.5"/>
+      </svg>
+    </td>
+    <td>
+      <svg viewBox="0 0 78 40" aria-label="NOR gate">
+        <line x1="2" y1="13" x2="14" y2="13" stroke="#111" stroke-width="1.5"/>
+        <line x1="2" y1="27" x2="14" y2="27" stroke="#111" stroke-width="1.5"/>
+        <path d="M12 5 C24 5 32 12 46 20 C32 28 24 35 12 35 C21 27 21 13 12 5 Z" fill="none" stroke="#111" stroke-width="1.5"/>
+        <circle cx="50.5" cy="20" r="4.2" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="55" y1="20" x2="74" y2="20" stroke="#111" stroke-width="1.5"/>
+      </svg>
+    </td>
+    <td>
+      <svg viewBox="0 0 78 40" aria-label="XOR gate">
+        <path d="M8 5 C16 13 16 27 8 35" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="2" y1="13" x2="16" y2="13" stroke="#111" stroke-width="1.5"/>
+        <line x1="2" y1="27" x2="16" y2="27" stroke="#111" stroke-width="1.5"/>
+        <path d="M14 5 C26 5 34 12 50 20 C34 28 26 35 14 35 C23 27 23 13 14 5 Z" fill="none" stroke="#111" stroke-width="1.5"/>
+        <line x1="50" y1="20" x2="74" y2="20" stroke="#111" stroke-width="1.5"/>
+      </svg>
+    </td>
+  </tr>
+  <tr class="expr">
+    <td><span class="b">A</span><br>0 gives 1, 1 gives 0</td>
+    <td>A.B</td>
+    <td>A + B</td>
+    <td><span class="b">A.B</span></td>
+    <td><span class="b">A + B</span></td>
+    <td>A ⊕ B</td>
+  </tr>
+</table>
+<table class="tight">
+  <thead>
+    <tr>
+      <th class="c">A</th><th class="c">B</th>
+      <th class="c">AND</th><th class="c">OR</th><th class="c">NAND</th>
+      <th class="c">NOR</th><th class="c">XOR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">1</td><td class="c">1</td><td class="c">0</td></tr>
+    <tr><td class="c">0</td><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">1</td></tr>
+    <tr><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">1</td></tr>
+    <tr><td class="c">1</td><td class="c">1</td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">0</td></tr>
+  </tbody>
+</table>
+<p>On a circuit question, add a working column for each gate before the output column. Those columns carry marks of their own.</p>
+
+<section class="page2">
+<header class="top">
+  <h1>Chapter 15 Review Sheet</h1>
+  <div class="meta">Adders, flip-flops, Boolean algebra, K-maps</div>
+</header>
+
+<h2>Adders</h2>
+<div class="cols">
+  <div>
+    <h3>Half adder — two bits, no carry in</h3>
+    <p>Sum = A ⊕ B &nbsp;&nbsp; Carry = A.B</p>
+    <table class="tight">
+      <tr><th class="c">A</th><th class="c">B</th><th class="c">Sum</th><th class="c">Carry</th></tr>
+      <tr><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">0</td></tr>
+      <tr><td class="c">0</td><td class="c">1</td><td class="c">1</td><td class="c">0</td></tr>
+      <tr><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">0</td></tr>
+      <tr><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">1</td></tr>
+    </table>
+    <p>One XOR gate makes the sum. One AND gate makes the carry. It can start a binary addition. It cannot take a carry from the previous column.</p>
+  </div>
+  <div>
+    <h3>Full adder — A, B and a carry in</h3>
+    <p>Sum = A ⊕ B ⊕ Cin</p>
+    <p>Cout = A.B + Cin.(A ⊕ B)</p>
+    <p>The same Cout is A.B + A.Cin + B.Cin. It is 1 when at least two of the three inputs are 1. Sum is 1 when an odd number of inputs are 1.</p>
+    <svg class="fig" viewBox="0 0 340 112" width="100%" height="68" aria-label="Full adder made from two half adders and an OR gate">
+      <rect x="48" y="12" width="70" height="40" fill="#fff" stroke="#111" stroke-width="1.2"/>
+      <text x="83" y="29" text-anchor="middle" font-size="9">Half</text>
+      <text x="83" y="41" text-anchor="middle" font-size="9">adder</text>
+      <rect x="176" y="12" width="70" height="40" fill="#fff" stroke="#111" stroke-width="1.2"/>
+      <text x="211" y="29" text-anchor="middle" font-size="9">Half</text>
+      <text x="211" y="41" text-anchor="middle" font-size="9">adder</text>
+      <rect x="210" y="74" width="36" height="24" fill="#fff" stroke="#111" stroke-width="1.2"/>
+      <text x="228" y="90" text-anchor="middle" font-size="9">OR</text>
+      <text x="2" y="26" font-size="9">A</text>
+      <text x="2" y="46" font-size="9">B</text>
+      <line x1="14" y1="23" x2="48" y2="23" stroke="#111" stroke-width="1.15"/>
+      <line x1="14" y1="43" x2="48" y2="43" stroke="#111" stroke-width="1.15"/>
+      <line x1="118" y1="23" x2="176" y2="23" stroke="#111" stroke-width="1.15"/>
+      <text x="147" y="19" text-anchor="middle" font-size="8">S</text>
+      <text x="146" y="46" font-size="8">Cin</text>
+      <line x1="162" y1="43" x2="176" y2="43" stroke="#111" stroke-width="1.15"/>
+      <line x1="246" y1="23" x2="292" y2="23" stroke="#111" stroke-width="1.15"/>
+      <text x="296" y="26" font-size="9">Sum</text>
+      <line x1="83" y1="52" x2="83" y2="90" stroke="#111" stroke-width="1.15"/>
+      <line x1="83" y1="90" x2="210" y2="90" stroke="#111" stroke-width="1.15"/>
+      <line x1="196" y1="52" x2="196" y2="80" stroke="#111" stroke-width="1.15"/>
+      <line x1="196" y1="80" x2="210" y2="80" stroke="#111" stroke-width="1.15"/>
+      <line x1="246" y1="86" x2="292" y2="86" stroke="#111" stroke-width="1.15"/>
+      <text x="296" y="89" font-size="9">Cout</text>
+    </svg>
+    <p class="cap">Two half adders, then OR the two carry outputs. Cout of one full adder is Cin of the next bit.</p>
+  </div>
+</div>
+
+<h2>Flip-flops — each one stores one bit</h2>
+<div class="cols">
+  <div>
+    <h3>SR, built from cross-coupled NOR gates</h3>
+    <p>S enters the gate whose output is <span class="b">Q</span>. R enters the gate whose output is Q. Each output is fed back into the other gate.</p>
+    <table class="tight">
+      <tr><th class="c">S</th><th class="c">R</th><th>Q next</th><th>What to write</th></tr>
+      <tr><td class="c">0</td><td class="c">0</td><td>unchanged</td><td>Holds the stored bit</td></tr>
+      <tr><td class="c">0</td><td class="c">1</td><td>0</td><td>Reset. <span class="b">Q</span> = 1</td></tr>
+      <tr><td class="c">1</td><td class="c">0</td><td>1</td><td>Set. <span class="b">Q</span> = 0</td></tr>
+      <tr><td class="c">1</td><td class="c">1</td><td>invalid</td><td>Both outputs are forced to 0, so <span class="b">Q</span> is not the opposite of Q. When S and R return to 0, the bit is unpredictable.</td></tr>
+    </table>
+  </div>
+  <div>
+    <svg class="fig" viewBox="0 0 300 148" width="100%" height="88" aria-label="NOR SR flip-flop. S enters the upper gate, R enters the lower gate, and each output feeds the other gate.">
+      <text x="0" y="30" font-size="11">S</text>
+      <text x="0" y="118" font-size="11">R</text>
+      <line x1="14" y1="26" x2="86" y2="26" stroke="#111" stroke-width="1.2"/>
+      <line x1="28" y1="44" x2="86" y2="44" stroke="#111" stroke-width="1.2"/>
+      <line x1="28" y1="100" x2="86" y2="100" stroke="#111" stroke-width="1.2"/>
+      <line x1="14" y1="114" x2="86" y2="114" stroke="#111" stroke-width="1.2"/>
+      <path d="M84 14 C106 14 118 24 140 35 C118 46 106 56 84 56 C98 45 98 25 84 14 Z" fill="#fff" stroke="#111" stroke-width="1.35"/>
+      <circle cx="146" cy="35" r="5" fill="#fff" stroke="#111" stroke-width="1.35"/>
+      <line x1="151" y1="35" x2="236" y2="35" stroke="#111" stroke-width="1.2"/>
+      <text x="242" y="39" font-size="12">Q</text>
+      <line x1="241" y1="26" x2="253" y2="26" stroke="#111" stroke-width="1.2"/>
+      <path d="M84 88 C106 88 118 98 140 109 C118 120 106 130 84 130 C98 119 98 99 84 88 Z" fill="#fff" stroke="#111" stroke-width="1.35"/>
+      <circle cx="146" cy="109" r="5" fill="#fff" stroke="#111" stroke-width="1.35"/>
+      <line x1="151" y1="109" x2="258" y2="109" stroke="#111" stroke-width="1.2"/>
+      <text x="264" y="113" font-size="12">Q</text>
+      <line x1="210" y1="35" x2="210" y2="78" stroke="#111" stroke-width="1.2"/>
+      <line x1="210" y1="78" x2="36" y2="78" stroke="#111" stroke-width="1.2"/>
+      <line x1="36" y1="78" x2="36" y2="100" stroke="#111" stroke-width="1.2"/>
+      <line x1="228" y1="109" x2="228" y2="66" stroke="#111" stroke-width="1.2"/>
+      <line x1="228" y1="66" x2="22" y2="66" stroke="#111" stroke-width="1.2"/>
+      <line x1="22" y1="66" x2="22" y2="44" stroke="#111" stroke-width="1.2"/>
+      <circle cx="210" cy="35" r="2.1" fill="#111"/>
+      <circle cx="228" cy="109" r="2.1" fill="#111"/>
+    </svg>
+    <p class="cap">Top NOR output is <span class="b">Q</span>. Bottom NOR output is Q. The wire from each output is an input of the other gate.</p>
+    <h3>JK — clocked, and no invalid input</h3>
+    <table class="tight">
+      <tr><th class="c">J</th><th class="c">K</th><th>Q after the clock</th></tr>
+      <tr><td class="c">0</td><td class="c">0</td><td>Q, no change</td></tr>
+      <tr><td class="c">0</td><td class="c">1</td><td>0, reset</td></tr>
+      <tr><td class="c">1</td><td class="c">0</td><td>1, set</td></tr>
+      <tr><td class="c">1</td><td class="c">1</td><td><span class="b">Q</span>, toggle</td></tr>
+    </table>
+    <p>Outputs change on the clock pulse. J = K = 1 flips the stored bit. That is the input an SR flip-flop cannot accept.</p>
+  </div>
+</div>
+
+<h2>Boolean laws — name the law in the working</h2>
+<p>The final line on its own does not get the method marks. Each different law used earns a mark.</p>
+<table class="tight">
+  <colgroup><col style="width:22%"><col style="width:78%"></colgroup>
+  <tr><th>Law to name</th><th>The step that scores</th></tr>
+  <tr><td>De Morgan</td><td><span class="b">A.B</span> = <span class="b">A</span> + <span class="b">B</span> &nbsp;&nbsp; and &nbsp;&nbsp; <span class="b">A + B</span> = <span class="b">A</span> . <span class="b">B</span>. Break the bar and change the operator.</td></tr>
+  <tr><td>Double complement</td><td>NOT(NOT A) = A. A second bar cancels the first.</td></tr>
+  <tr><td>Distributive</td><td>A + B.C = (A + B)(A + C) &nbsp;&nbsp; and &nbsp;&nbsp; A.(B + C) = A.B + A.C</td></tr>
+  <tr><td>Absorption</td><td>A + A.B = A &nbsp;&nbsp; and &nbsp;&nbsp; A.(A + B) = A</td></tr>
+  <tr><td>Complement</td><td>A + <span class="b">A</span> = 1 &nbsp;&nbsp; and &nbsp;&nbsp; A.<span class="b">A</span> = 0</td></tr>
+  <tr><td>Identity</td><td>A + 0 = A &nbsp;&nbsp; and &nbsp;&nbsp; A.1 = A</td></tr>
+  <tr><td>Annulment</td><td>A + 1 = 1 &nbsp;&nbsp; and &nbsp;&nbsp; A.0 = 0</td></tr>
+  <tr><td>Idempotent</td><td>A + A = A &nbsp;&nbsp; and &nbsp;&nbsp; A.A = A</td></tr>
+</table>
+
+<h2>Karnaugh maps and a sum of products</h2>
+<div class="cols">
+  <div>
+    <h3>Truth table to sum of products</h3>
+    <ul>
+      <li>One product for every row in which the output is 1.</li>
+      <li>Every input appears in every product. Complement an input that is 0 in that row.</li>
+      <li>Join the products with +. Leave it unsimplified until a later part asks.</li>
+      <li>The mark is usually one for every two correct products.</li>
+    </ul>
+    <h3>Reading the loops</h3>
+    <ul>
+      <li>Headings run 00, 01, 11, 10 on both edges. One bit changes between neighbours, and the map wraps: the first cell is next to the last.</li>
+      <li>For three variables the single variable labels one side and the pair labels the other, still in that order. Use the labels printed on the paper.</li>
+      <li>Fill every cell. On a two-mark map, one wrong cell loses one mark and two wrong cells lose both.</li>
+      <li>Stop if the question says not to simplify further. The next part is the factorised form, for example A.C + B.C = C.(A + B), and that step is marked on its own.</li>
+    </ul>
+  </div>
+  <div>
+    <table class="tight" style="width:auto; margin-left:0">
+      <tr><th></th><th class="c" colspan="4">CD</th></tr>
+      <tr><th>AB</th><th class="c">00</th><th class="c">01</th><th class="c">11</th><th class="c">10</th></tr>
+      <tr><th class="c">00</th><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+      <tr><th class="c">01</th><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+      <tr><th class="c">11</th><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+      <tr><th class="c">10</th><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+    </table>
+    <p class="cap">11 sits between 01 and 10. The row 00 is adjacent to the row 10, and the column 00 is adjacent to the column 10.</p>
+    <ul>
+      <li>Loop the 1s in a rectangle of 1, 2, 4, 8 or 16 cells. Make the loops as large as possible and use as few as possible. Loops may overlap and may leave one edge and continue on the opposite edge.</li>
+      <li>A group of 3 or 6, or a diagonal, does not score. An incorrect loop can cap the marks for that part. One correct loop earns one mark.</li>
+      <li>From a loop, keep a variable that stays the same: write it when it is 1, complement it when it is 0, and drop it when it changes. Join the products with +.</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+</body>
+</html>
